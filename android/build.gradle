@@ -1,5 +1,5 @@
 buildscript {
-    ext {
+    ext  {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 24
         compileSdkVersion = 35
@@ -16,6 +16,16 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
+}
+
+allprojects {
+   repositories {
+       google()
+       maven {
+            url  "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"
+       }
+       
+   }
 }
 
 apply plugin: "com.facebook.react.rootproject"
