@@ -1,22 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
-import {Container} from '../../../Components/Container/Container';
-import {AllColors} from '../../../Constants/COLORS';
-import {CustomHeader} from '../../../Components/CustomHeader/CutsomHeader';
-import {Fonts} from '../../../Constants/Fonts';
+import React, { useState, useEffect } from 'react';
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, } from 'react-native';
+import { Container } from '../../../Components/Container/Container';
+import { AllColors } from '../../../Constants/COLORS';
+import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
+import { Fonts } from '../../../Constants/Fonts';
 import moment from 'moment';
-import {Instance} from '../../../Api/Instance';
-import {GET_PRODUCT} from '../../../Api/Api_End_Points';
+import { Instance } from '../../../Api/Instance';
+import { GET_PRODUCT } from '../../../Api/Api_End_Points';
 
-export default function DealPostList({navigation}) {
+export default function DealPostList({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +42,7 @@ export default function DealPostList({navigation}) {
         <ActivityIndicator
           size="large"
           color={AllColors.primary900}
-          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         />
       </Container>
     );
@@ -72,13 +64,13 @@ export default function DealPostList({navigation}) {
         data={data}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <View style={{marginTop: 13, bottom: 3}}>
+        renderItem={({ item }) => (
+          <View style={{ marginTop: 13, bottom: 3 }}>
             <TouchableOpacity
               style={styles.itemContainer}
-              onPress={() => navigation.navigate('DealChat', {userData: item})}>
+              onPress={() => navigation.navigate('DealChat', { userData: item })}>
               <Image
-                source={{uri: item.image}}
+                source={{ uri: item.image }}
                 resizeMode="contain"
                 style={styles.image}
               />

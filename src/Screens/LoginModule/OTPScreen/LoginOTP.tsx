@@ -1,5 +1,5 @@
-import {CommonActions, NavigationProp} from '@react-navigation/native';
-import React, {RefObject, useEffect, useRef, useState} from 'react';
+import { CommonActions, NavigationProp } from '@react-navigation/native';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import {
   Image,
   ImageBackground,
@@ -11,14 +11,14 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Images} from '../../../Assets/Images';
-import {AllColors} from '../../../Constants/COLORS';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {styles} from './styles';
+import { Images } from '../../../Assets/Images';
+import { AllColors } from '../../../Constants/COLORS';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { styles } from './styles';
 import Animated from 'react-native-reanimated';
 
 interface LoginScreenProps {
-  route: {params: Mnumber};
+  route: { params: Mnumber };
   navigation: NavigationProp<any, any>;
 }
 type Mnumber = {
@@ -74,6 +74,7 @@ const LoginOTP = (props: LoginScreenProps) => {
 
     return () => clearInterval(timer); // Clear the interval when component unmounts or timer resets
   }, [isRunning, timeLeft]);
+
   useEffect(() => {
     startTimer();
   }, []);
@@ -91,7 +92,7 @@ const LoginOTP = (props: LoginScreenProps) => {
       props.navigation.dispatch(
         CommonActions.reset({
           index: 3,
-          routes: [{name: 'TabNavigator'}],
+          routes: [{ name: 'TabNavigator' }],
         }),
       );
     } else {
@@ -162,7 +163,7 @@ const LoginOTP = (props: LoginScreenProps) => {
             <Animated.Image
               style={styles.mailImage}
               resizeMode="contain"
-              source={ Images.mobilephone}
+              source={Images.mobilephone}
             />
             <Text
               style={

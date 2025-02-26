@@ -1,4 +1,4 @@
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   Image,
@@ -28,6 +28,7 @@ interface LoginScreenProps {
 }
 
 const LoginScreen = (props: LoginScreenProps) => {
+  const navigation = useNavigation<any>()
   const [number, onChangeNumber] = useState("");
   const [isSelected, setIsSelected] = useState(Boolean);
   const [userMobileNumber, setuserMobileNumber] = useState<string>(
@@ -38,7 +39,7 @@ const LoginScreen = (props: LoginScreenProps) => {
   const [userMobileNumberErrorString, setuserMobileNumberErrorString] =
     useState<string>("");
 
-    
+
   function onChageMobileNumber(text: string) {
     if (text) {
       setuserMobileNumber(text);
@@ -58,85 +59,35 @@ const LoginScreen = (props: LoginScreenProps) => {
     }
   }
 
-  function SendOTP(Type : string) {
-    props.navigation.navigate(" LoginDetails",{Type : Type == 'Email' ? 'Email' : "OTP" });
+  function SendOTP(Type: string) {
+    navigation.navigate("LoginDetails", { Type: Type == 'Email' ? 'Email' : "OTP" });
   }
-  return (
-    <Container   statusBarStyle={'dark-content'}
-          statusBarBackgroundColor={AllColors.white}
-          backgroundColor={AllColors.white}>
 
-   
-      <KeyboardAwareScrollView
-        style={styles.marginView}
-        enableOnAndroid={true}
-        extraScrollHeight={Platform.OS == "ios" ? 0 : 40}
-        enableAutomaticScroll={true}
-        keyboardShouldPersistTaps="handled"
-      >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}
-        >
+  return (
+    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+
+      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == "ios" ? 0 : 40} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
           <View>
-            <Animated.Image
-              style={styles.logoImage}
-              resizeMode="contain"
-              sharedTransitionTag="Tag"
-              source={Images.Logo}
-            />
+            <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
             <Text style={styles.phoneText}>{"Login With E-mail"}</Text>
-            <Animated.Image
-              style={styles.mailImage}
-              resizeMode="contain"
-              source={Images.tick}
-            />
-            <Text style={styles.phoneSubText}>
-              {"Select your Login"}
-            </Text>
-             <View style={styles.InputView}>
-             
-            </View>
-              <TouchableOpacity
-                onPress={()=>{SendOTP("Email")} }
-                style={styles.touchView}>
-                <Text
-                  style={[
-                    styles.buttonInsideText,
-                   
-                  ]}
-                >
-                  Login with E-mail
-                </Text>
-              </TouchableOpacity>
-            
-              <TouchableOpacity
-                onPress={()=>{SendOTP("OTP")}}
-               
-                style={[styles.touchView, {
-                  backgroundColor:
-                    AllColors.primary300,
-                },]}
-              >
-                <Text
-                  style={[
-                    styles.buttonInsideText,
-                    {
-                      color:
-                        AllColors.black,
-                    },
-                  ]}
-                >
-                  Login with OTP
-                </Text>
-              </TouchableOpacity>
-              <Text style={styles.DontTxt}>Don't have an Account? 
-                <Text style={styles.siguptxt} onPress={(()=>props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
-           </View>
+            <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.tick} />
+            <Text style={styles.phoneSubText}>{"Select your Login"}</Text>
+            <View style={styles.InputView}></View>
+
+            <TouchableOpacity onPress={() => { SendOTP("Email") }} style={styles.touchView}>
+              <Text style={[styles.buttonInsideText,]}>Login with E-mail</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => { SendOTP("OTP") }} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
+              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
+            </TouchableOpacity>
+            <Text style={styles.DontTxt}>Don't have an Account?
+              <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
+          </View>
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
-      </Container>
+    </Container>
   );
 };
 

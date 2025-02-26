@@ -1,38 +1,26 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  FlatList,
-  Image,
-  Modal,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Linking,
-  StyleSheet,
-} from 'react-native';
-import {useSocketContext} from '../../../context/SocketContext';
-import {useAuthContext} from '../../../context/AuthContext';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {Container} from '../../../Components/Container/Container';
-import {AllColors} from '../../../Constants/COLORS';
-import {Fonts} from '../../../Constants/Fonts';
-import {Images} from '../../../Assets/Images';
+import React, { useState, useEffect, useRef } from 'react';
+import { FlatList, Image, Modal, Text, TextInput, TouchableOpacity, View, Linking, StyleSheet, } from 'react-native';
+import { useAuthContext } from '../../../context/AuthContext';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Container } from '../../../Components/Container/Container';
+import { AllColors } from '../../../Constants/COLORS';
+import { Fonts } from '../../../Constants/Fonts';
+import { Images } from '../../../Assets/Images';
 import axios from 'axios';
 
-export default function DealChat({route}) {
-  const {userData} = route.params;
+export default function DealChat({ route }) {
+  const { userData } = route.params;
 
   console.log(`https://ricedeal.onrender.com/api/v1/messages/${userData?._id}`);
 
-  const {socket} = useSocketContext();
-  const {authUser} = useAuthContext();
+  const { socket } = useSocketContext();
+  const { authUser } = useAuthContext();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState('');
   const lastMessageRef = useRef(null);
-  const baseUrl = 'https://ricedeal.onrender.com';
 
   useEffect(() => {
     if (messages.length > 0 && lastMessageRef.current) {
@@ -71,11 +59,7 @@ export default function DealChat({route}) {
       setInputText('');
     } else {
       try {
-        const response = await axios.post(
-          `https://ricedeal.onrender.com/api/v1/messages/${userData?._id}`,
-          {message: inputText},
-          {headers: {Authorization: `Bearer ${authUser?.token}`}},
-        );
+        const response = await axios.post(`https://ricedeal.onrender.com/api/v1/messages/${userData?._id}`, { message: inputText }, { headers: { Authorization: `Bearer ${authUser?.token}` } },);
         console.log('respose', response);
         console.log('Message sent via API:', response.data);
         const newMessage = {
@@ -92,7 +76,7 @@ export default function DealChat({route}) {
   };
 
   const handleImagePick = () => {
-    launchImageLibrary({mediaType: 'photo', quality: 1}, response => {
+    launchImageLibrary({ mediaType: 'photo', quality: 1 }, response => {
       if (response.assets) {
         const newMessage = {
           imageUri: response.assets[0].uri,
@@ -111,7 +95,7 @@ export default function DealChat({route}) {
     );
   };
 
-  const renderMessage = ({item}) => {
+  const renderMessage = ({ item }) => {
     const fromMe = item.senderId === authUser?._id;
     return (
       <View
@@ -123,7 +107,7 @@ export default function DealChat({route}) {
           <Text style={styles.messageText}>{item.message}</Text>
         ) : item.imageUri ? (
           <TouchableOpacity onPress={() => setSelectedImageUri(item.imageUri)}>
-            <Image source={{uri: item.imageUri}} style={styles.messageImage} />
+            <Image source={{ uri: item.imageUri }} style={styles.messageImage} />
           </TouchableOpacity>
         ) : null}
         <Text style={styles.timestamp}>{item.createdAt}</Text>
@@ -135,7 +119,7 @@ export default function DealChat({route}) {
     <Container backgroundColor={AllColors.white}>
       <View style={styles.headerContainer}>
         <Text style={styles.itemName}>{userData?.name}</Text>
-        <Image source={{uri: userData?.image}} style={styles.itemImage} />
+        <Image source={{ uri: userData?.image }} style={styles.itemImage} />
         <Text style={styles.adminName}>{userData?.city}</Text>
       </View>
 
@@ -183,7 +167,7 @@ export default function DealChat({route}) {
         <TouchableOpacity
           style={styles.modalBackground}
           onPress={() => setModalVisible(false)}>
-          <Image source={{uri: selectedImageUri}} style={styles.modalImage} />
+          <Image source={{ uri: selectedImageUri }} style={styles.modalImage} />
         </TouchableOpacity>
       </Modal>
     </Container>

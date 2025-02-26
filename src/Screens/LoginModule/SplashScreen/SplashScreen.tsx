@@ -41,7 +41,7 @@ import { CommonActions, NavigationProp } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { Image, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "./styles";
 
 interface SplashScreenProps {
@@ -52,8 +52,8 @@ const SplashScreen = (props: SplashScreenProps) => {
   useEffect(() => {
     const checkUserAuth = async () => {
       try {
-        const userToken = await AsyncStorage.getItem('userToken'); 
-        console.log('Token:', userToken);
+        const userToken = await AsyncStorage.getItem('userToken');
+        // console.log('Token:', userToken);
 
         setTimeout(() => {
           if (userToken) {
@@ -75,9 +75,9 @@ const SplashScreen = (props: SplashScreenProps) => {
   return (
     <ImageBackground style={styles.container}>
       <SafeAreaView>
-        <Image 
-          style={styles.SplashScreen} 
-          source={{ uri: 'https://www.eatthis.com/wp-content/uploads/sites/4/media/images/ext/989072325/white-rice-uncooked.jpg?quality=82&strip=all&w=640' }} 
+        <Image
+          style={styles.SplashScreen}
+          source={{ uri: 'https://www.eatthis.com/wp-content/uploads/sites/4/media/images/ext/989072325/white-rice-uncooked.jpg?quality=82&strip=all&w=640' }}
         />
       </SafeAreaView>
     </ImageBackground>
