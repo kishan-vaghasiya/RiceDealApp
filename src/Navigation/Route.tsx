@@ -26,6 +26,7 @@ import ChoosePlan from "../Screens/TabModule/ChoosePlan/ChoosePlan";
 import MobileOTP from "../Screens/LoginModule/LoginScreen/MobileOTP";
 // import EmailLogin from "../Screens/LoginModule/LoginScreen/EmailLogin";
 import RiseListChat from "../Screens/TabModule/RiseListScreen/RiseListChat";
+import Subscribed from "../Screens/TabModule/ChoosePlan/Subscribed";
 
 const options2 = {
   headerShown: false,
@@ -82,6 +83,7 @@ export default function Route() {
           <StackObj.Screen name='ChoosePlan' component={ChoosePlan} options={{ headerShown: false }} />
           <StackObj.Screen name='MobileOTP' component={MobileOTP} options={{ headerShown: false }} />
           <StackObj.Screen name='RiseListChat' component={RiseListChat} options={{ headerShown: false }} />
+          <StackObj.Screen name='Subscribed' component={Subscribed} options={{ headerShown: false }} />
         </StackObj.Navigator>
       </NavigationContainer>
     </View>

@@ -20,7 +20,6 @@ const InvestScreen = (props: InvestScreenProps) => {
   const [loading, setLoading] = useState<boolean>(true)
 
 
-
   const getAllUsers = async () => {
     return await Instance.get(`/v1/users/chat/users`, { headers: options }).then((response) => {
       setUsers(response.data.result)

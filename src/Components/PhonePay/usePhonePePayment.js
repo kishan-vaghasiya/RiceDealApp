@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Alert} from 'react-native';
+import React, { useState } from 'react';
+import { Alert } from 'react-native';
 import PhonePe from 'react-native-phonepe-pg';
 import Base64 from 'react-native-base64';
 import sha256 from 'sha256';
@@ -24,7 +24,7 @@ const usePhonePePayment = () => {
 
       if (!PhonePe) {
         console.error('PhonePe SDK is not available');
-        return {status: 'FAILURE', errorMessage: 'SDK not available'};
+        return { status: 'FAILURE', errorMessage: 'SDK not available' };
       }
 
       await PhonePe.init(environment, merchantId, appId, enableLogging);
@@ -64,15 +64,15 @@ const usePhonePePayment = () => {
       } else {
         console.error('Payment failed:', response.errorMessage);
         Alert.alert('Payment Failed', 'Please try again.');
-        return {status: 'FAILURE'};
+        return { status: 'FAILURE' };
       }
     } catch (error) {
       console.error('Error processing payment:', error);
-      return {status: 'FAILURE', errorMessage: error.message};
+      return { status: 'FAILURE', errorMessage: error.message };
     }
   };
 
-  return {submitHandler};
+  return { submitHandler };
 };
 
 export default usePhonePePayment;

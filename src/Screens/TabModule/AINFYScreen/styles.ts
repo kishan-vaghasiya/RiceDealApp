@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     color: AllColors.black,
     fontSize: 22,
     marginHorizontal: 15,
-    fontFamily:Fonts.AfacadBold
+    fontFamily: Fonts.AfacadBold
   },
   profileContainer: {
     marginTop: 15,
@@ -30,34 +30,34 @@ export const styles = StyleSheet.create({
   profileImage: {
     width: metrics.hp9,
     height: metrics.hp9,
-    borderRadius:100
+    borderRadius: 100
   },
   profileDetails: {
-  marginRight:28,
-  marginTop:5
+    marginRight: 28,
+    marginTop: 5
   },
   profileDetailRow: {
     flexDirection: 'row',
-    marginTop:5
+    marginTop: 5
   },
   title: {
     fontSize: 18,
     color: '#000',
-    fontFamily:Fonts.AfacadBold
+    fontFamily: Fonts.AfacadBold
   },
-  name:{
+  name: {
     fontSize: 18,
-    color:AllColors.text300,
-    fontFamily:Fonts.AfacadMedium
+    color: AllColors.text300,
+    fontFamily: Fonts.AfacadMedium
   },
   addItemImage: {
     width: metrics.hp4,
     height: metrics.hp4,
-    top:20,
-    right:8
+    top: 20,
+    right: 8
   },
   commonChangableView: {
-    marginTop:10,
+    marginTop: 10,
   },
   itemContainer: {
     marginVertical: 5,
@@ -72,10 +72,10 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   itemImage: {
-    width:325,
+    width: 325,
     alignSelf: 'center',
-    height:150,
-    borderRadius:10
+    height: 150,
+    borderRadius: 10
   },
   itemDetails: {
     flexDirection: 'row',
@@ -86,11 +86,11 @@ export const styles = StyleSheet.create({
   itemTitle: {
     fontSize: fontSize(16),
     color: AllColors.black,
-    fontFamily:Fonts.AfacadBold
+    fontFamily: Fonts.AfacadBold
   },
   itemSubtitle: {
     fontSize: fontSize(14),
-    fontFamily:Fonts.AfacadBold
+    fontFamily: Fonts.AfacadBold
   },
   amountContainer: {
     flexDirection: 'row',
@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
   },
   amountText: {
     fontSize: fontSize(17),
-    fontFamily:Fonts.AfacadBold,
+    fontFamily: Fonts.AfacadBold,
     color: AllColors.primary900,
   },
   ItemViewHistory: {
@@ -115,10 +115,21 @@ export const styles = StyleSheet.create({
   },
   logoutButton: {
     position: 'absolute',
-    bottom: 100, 
+    bottom: 100,
     left: 15,
     right: 15,
-    backgroundColor: AllColors.primary900, 
+    backgroundColor: AllColors.primary900,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  PlanChooseButton: {
+    position: 'absolute',
+    bottom: 200,
+    left: 15,
+    right: 15,
+    backgroundColor: AllColors.primary900,
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
@@ -126,8 +137,8 @@ export const styles = StyleSheet.create({
   },
   logoutText: {
     color: AllColors.white,
-    fontSize:18,
-    fontFamily:Fonts.AfacadBold
+    fontSize: 18,
+    fontFamily: Fonts.AfacadBold
   },
   loaderContainer: {
     flex: 1,
@@ -135,5 +146,5 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  
+
 });
