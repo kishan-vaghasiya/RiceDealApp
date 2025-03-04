@@ -1,5 +1,5 @@
-import {NavigationProp} from '@react-navigation/native';
-import React, {useState,useEffect} from 'react';
+import { NavigationProp } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import {
   Animated,
   FlatList,
@@ -12,24 +12,26 @@ import {
   View,
   ActivityIndicator
 } from 'react-native';
-import {Images} from '../../../Assets/Images';
-import {styles} from './styles';
+import { Images } from '../../../Assets/Images';
+import { styles } from './styles';
 import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
 import metrics from '../../../Constants/Metrics';
-import {ExpandingDot} from 'react-native-animated-pagination-dots';
+import { ExpandingDot } from 'react-native-animated-pagination-dots';
 import { useNavigation } from '@react-navigation/native';
 import { Container } from '../../../Components/Container/Container';
 import { AllColors } from '../../../Constants/COLORS';
 import axios from 'axios';
 import { Instance } from '../../../Api/Instance';
 import { GET_TRADES } from '../../../Api/Api_End_Points';
+import socketServices from '../../utils/socketServices';
+import { useAuthContext } from '../../../context/AuthContext';
 
 interface HomeScreenProps {
   // route: { params: { changeSignInStatus: (flag: boolean) => void } }
   navigation: NavigationProp<any, any>;
 }
 
- const products = [
+const products = [
   {
     id: '1',
     name: 'V R M apple (53 par kg)',
@@ -69,31 +71,36 @@ interface HomeScreenProps {
 
 
 const HomeScreen = (props: HomeScreenProps) => {
+  const { options, authUser } = useAuthContext()
   const navigation = useNavigation();
-  const [categoriess, setCategoriess] = useState<any[]>([]); 
-  const [loading, setLoading] = useState(true); 
+  const [categoriess, setCategoriess] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await Instance.get(GET_TRADES.url);
         if (response.data.success) {
-          setCategoriess(response.data.result); 
+          setCategoriess(response.data.result);
         } else {
           console.error('Failed to fetch categories', response.data.msg);
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
     fetchCategories();
-  }, []); 
+  }, []);
 
-  const renderProduct = ({item}: any) => (
+  useEffect(() => {
+    socketServices.initialzeSocket(authUser?._id)
+  }, [])
+
+  const renderProduct = ({ item }: any) => (
     <View style={styles.productContainer}>
-      <Image source={{uri: item.image}} style={styles.productImage} />
+      <Image source={{ uri: item.image }} style={styles.productImage} />
       <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.productCode}>{item.code}</Text>
     </View>
@@ -101,20 +108,20 @@ const HomeScreen = (props: HomeScreenProps) => {
   const renderCategory = ({ item }: any) => (
     <TouchableOpacity
       style={styles.categoryCard}
-      onPress={() => props.navigation.navigate('RiseListScreen', { categoryId: item._id })}  
-    >   
+      onPress={() => props.navigation.navigate('RiseListScreen', { categoryId: item._id })}
+    >
       <Image source={{ uri: item.image }} style={styles.categoryImage} />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
-  
+
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   return (
-    
-    <Container  
-      statusBarStyle={'dark-content'} 
+
+    <Container
+      statusBarStyle={'dark-content'}
       statusBarBackgroundColor={AllColors.white}
       backgroundColor={AllColors.white}>
       <CustomHeader
@@ -124,7 +131,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           props.navigation.navigate('EditProfile');
         }}
       />
-      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={{marginBottom: metrics.hp10} }>
+      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={{ marginBottom: metrics.hp10 }}>
         {/* Product Carousel */}
         <FlatList
           data={products}
@@ -134,7 +141,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           contentContainerStyle={styles.productList}
           showsHorizontalScrollIndicator={false}
           onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {x: scrollX}}}],
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
             {
               useNativeDriver: false,
             },
@@ -144,8 +151,8 @@ const HomeScreen = (props: HomeScreenProps) => {
           scrollEventThrottle={16}
         />
 
-        <TouchableOpacity onPress={()=>props.navigation.navigate('DealPostList')}>
-        <Image source={Images.Deal} style={styles.banner} />
+        <TouchableOpacity onPress={() => props.navigation.navigate('DealPostList')}>
+          <Image source={Images.Deal} style={styles.banner} />
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Categories</Text>
@@ -164,7 +171,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           />
         )}
       </ScrollView>
-      </Container>
+    </Container>
   );
 };
 

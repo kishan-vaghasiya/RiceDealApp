@@ -165,6 +165,7 @@ const AINFYScreen = (props: AINFYScreenProps) => {
           <TouchableOpacity onPress={() => { props.navigation.navigate('AddItem'); }}>
             <Image source={Images.additem} style={styles.addItemImage} resizeMode="contain" />
           </TouchableOpacity>
+          {/* <Text>Add Product</Text> add here text */}
         </View>
       </View>
 
@@ -193,27 +194,15 @@ const AINFYScreen = (props: AINFYScreenProps) => {
               <Text style={styles.title}>Choose Plan</Text>
             </TouchableOpacity>
           }
+          {/* <TouchableOpacity style={{ borderWidth: 1, height: 45, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10, borderRadius: 5 }} onPress={() => { props.navigation.navigate('ChoosePlan'); }}>
+            <Text style={styles.title}>Choose Plan</Text>
+          </TouchableOpacity> */}
         </View>
       </View>
 
       <ScrollView >
         <FlatList data={products} renderItem={Item} keyExtractor={(item) => item._id} />
       </ScrollView>
-
-      {/* <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate("ChoosePlan")}> */}
-      {/* <TouchableOpacity style={{
-        position: 'absolute',
-        bottom: 160,
-        left: 15,
-        right: 15,
-        backgroundColor: AllColors.primary900,
-        paddingVertical: 10,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }} onPress={() => navigation.navigate("ChoosePlan")}>
-        <Text style={styles.logoutText}>Choose Plan</Text>
-      </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>

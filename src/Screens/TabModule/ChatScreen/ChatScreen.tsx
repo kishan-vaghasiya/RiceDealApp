@@ -53,7 +53,7 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
     try {
       const response = await Instance.get(`/v1/messages/${userId}`, { headers: options });
       // console.log("response: ", response?.data);
-
+      await Instance.get(`/v1/messages/read/${response?.data?.result?._id}`, { headers: options });
       setLoading(false)
       setMessages(response.data.result?.messages);
     } catch (error: any) {
@@ -64,7 +64,7 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
 
   useEffect(() => {
     socketServices.on('newMessage', (message: Message) => {
-      console.log("message: ", message);
+      // console.log("message: ", message);
 
       setMessages((prevMessages) => [...prevMessages, message]);
     });
@@ -95,7 +95,7 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
 
   const handleSendMessage = async (sendId: any) => {
     if (inputText.trim()) {
-      return await Instance.post(`/v1/messages/send/${userId}`, { message: inputText }, { headers: options }).then((resonse) => {
+      return await Instance.post(`/ v1 / messages / send / ${userId}`, { message: inputText }, { headers: options }).then((resonse) => {
         setMessages((prevMessages) => [...prevMessages, resonse?.data?.result]);
         setInputText('');
       }).catch((error: any) => {
@@ -129,7 +129,7 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
   const phoneNumber = '1234567890';
   const handleCallPress = () => {
     if (phoneNumber) {
-      Linking.openURL(`tel:${phoneNumber}`).catch((err) =>
+      Linking.openURL(`tel: ${phoneNumber}`).catch((err) =>
         console.error('Error opening dialer:', err)
       );
     } else {

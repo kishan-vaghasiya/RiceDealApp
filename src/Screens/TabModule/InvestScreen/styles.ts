@@ -1,7 +1,7 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
-import {AllColors} from '../../../Constants/COLORS';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { AllColors } from '../../../Constants/COLORS';
 import metrics from '../../../Constants/Metrics';
-import {Fonts} from '../../../Constants/Fonts';
+import { Fonts } from '../../../Constants/Fonts';
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   },
   list: {
     paddingVertical: 10,
-    marginTop:metrics.hp1,
+    marginTop: metrics.hp1,
     marginHorizontal: metrics.hp1,
   },
   card: {
@@ -52,5 +52,24 @@ export const styles = StyleSheet.create({
   subtitle: {
     color: '#000',
     fontSize: 14,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  badge: {
+    backgroundColor: 'red',
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });

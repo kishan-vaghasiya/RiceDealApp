@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 
 
-// const SOCKET_URL = 'http://192.168.0.108:4000';
-const SOCKET_URL = 'https://ricedeal.onrender.com';
+const SOCKET_URL = 'http://192.168.0.104:4000';
+// const SOCKET_URL = 'https://ricedeal.onrender.com';
 
 
 class WSService {
