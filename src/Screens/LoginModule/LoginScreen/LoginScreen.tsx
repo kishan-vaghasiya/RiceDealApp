@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ImageBackground,
@@ -21,7 +21,8 @@ import { AllRegexss } from "../../../Constants/AllRegexss";
 import Animated from "react-native-reanimated";
 import { Container } from "../../../Components/Container/Container";
 import ToastMessage from "../../../Components/ToastMessage/ToastMessage";
-
+import { requestUserPermission } from "../../utils/PushNotification";
+import messaging from '@react-native-firebase/messaging';
 interface LoginScreenProps {
   // route: { params: { changeSignInStatus: (flag: boolean) => void } }
   navigation: NavigationProp<any, any>;
@@ -31,6 +32,7 @@ const LoginScreen = (props: LoginScreenProps) => {
   const navigation = useNavigation<any>()
   const [number, onChangeNumber] = useState("");
   const [isSelected, setIsSelected] = useState(Boolean);
+  const [fcmToken, setFcmToken] = useState<any>('');
   const [userMobileNumber, setuserMobileNumber] = useState<string>(
     __DEV__ ? "" : ""
   );
@@ -39,7 +41,11 @@ const LoginScreen = (props: LoginScreenProps) => {
   const [userMobileNumberErrorString, setuserMobileNumberErrorString] =
     useState<string>("");
 
-
+    const getFCMToken = async () => {
+      let token = await messaging().getToken();
+      setFcmToken(token);
+      console.log(token, 'my token');
+    };
   function onChageMobileNumber(text: string) {
     if (text) {
       setuserMobileNumber(text);
@@ -62,7 +68,11 @@ const LoginScreen = (props: LoginScreenProps) => {
   function SendOTP(Type: string) {
     navigation.navigate("LoginDetails", { Type: Type == 'Email' ? 'Email' : "OTP" });
   }
+  useEffect(() => {
+    requestUserPermission();
+    getFCMToken();
 
+  }, []);
   return (
     <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
 
