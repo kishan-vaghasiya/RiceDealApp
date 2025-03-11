@@ -253,7 +253,7 @@
 
 
 import { NavigationProp } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Keyboard, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, } from 'react-native';
 import { Images } from '../../../Assets/Images';
 import { styles } from './styles';
@@ -268,6 +268,8 @@ import { Instance } from '../../../Api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LOGIN } from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
+import messaging from '@react-native-firebase/messaging';
+
 
 interface LoginDetailsProps {
   route: { params: { Type: string } };
@@ -277,8 +279,15 @@ interface LoginDetailsProps {
 const LoginDetails = (props: LoginDetailsProps) => {
   const [userEmail, setuserEmail] = useState<string>('');
   const [userPass, setuserPass] = useState<string>('');
+  const [fcmToken, setFcmToken] = useState<any>('');
 
   // console.log("props?.route?.params?.Type: ", props?.route?.params);
+
+  const getFCMToken = async () => {
+    let token = await messaging().getToken();
+    setFcmToken(token);
+    // console.log(token, 'my token');
+  };
 
   const [isEmailSign, setIsEmailSign] = useState<string>(props?.route?.params?.Type);
   const [loading, setLoading] = useState<boolean>(false);
@@ -293,13 +302,13 @@ const LoginDetails = (props: LoginDetailsProps) => {
     }
     setLoading(true);
     try {
-      const response = await Instance.post(LOGIN.url, { email: userEmail, password: userPass, });
+      const response = await Instance.post(LOGIN.url, { email: userEmail, password: userPass, fcmToken: fcmToken });
 
       if (response.data.success) {
-        console.log("response: ", response?.data);
+        // console.log("response: ", response?.data);
 
         const userToken = response.data.token;
-        console.log("userToken: ", userToken);
+        // console.log("userToken: ", userToken);
 
         await AsyncStorage.setItem('userToken', userToken);
 
@@ -321,6 +330,10 @@ const LoginDetails = (props: LoginDetailsProps) => {
     }
   };
 
+
+  useEffect(() => {
+    getFCMToken()
+  }, [])
 
 
   return (

@@ -41,26 +41,22 @@ const LoginScreen = (props: LoginScreenProps) => {
   const [userMobileNumberErrorString, setuserMobileNumberErrorString] =
     useState<string>("");
 
-    const getFCMToken = async () => {
-      let token = await messaging().getToken();
-      setFcmToken(token);
-      console.log(token, 'my token');
-    };
+  const getFCMToken = async () => {
+    let token = await messaging().getToken();
+    setFcmToken(token);
+    console.log(token, 'my token');
+  };
+
   function onChageMobileNumber(text: string) {
     if (text) {
       setuserMobileNumber(text);
-      AllRegexss.mobileFormate.test(text)
-        ? (setuserMobileNumberHasError(false),
-          setuserMobileNumberErrorString(""),
-          Keyboard.dismiss())
-        : (setuserMobileNumberHasError(true),
+      AllRegexss.mobileFormate.test(text) ? (setuserMobileNumberHasError(false),
+        setuserMobileNumberErrorString(""), Keyboard.dismiss()) : (setuserMobileNumberHasError(true),
           setuserMobileNumberErrorString("Please enter valid mobile number"));
     } else {
       setuserMobileNumber(text);
-      text.length < 11 && text.length != 0
-        ? (setuserMobileNumberHasError(true),
-          setuserMobileNumberErrorString("Please enter valid mobile number"))
-        : (setuserMobileNumberHasError(false),
+      text.length < 11 && text.length != 0 ? (setuserMobileNumberHasError(true),
+        setuserMobileNumberErrorString("Please enter valid mobile number")) : (setuserMobileNumberHasError(false),
           setuserMobileNumberErrorString(""));
     }
   }
@@ -68,15 +64,17 @@ const LoginScreen = (props: LoginScreenProps) => {
   function SendOTP(Type: string) {
     navigation.navigate("LoginDetails", { Type: Type == 'Email' ? 'Email' : "OTP" });
   }
+
   useEffect(() => {
     requestUserPermission();
     getFCMToken();
-
   }, []);
+
   return (
     <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
 
       <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == "ios" ? 0 : 40} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
+
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
           <View>
             <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
@@ -92,9 +90,9 @@ const LoginScreen = (props: LoginScreenProps) => {
             <TouchableOpacity onPress={() => { SendOTP("OTP") }} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
               <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
             </TouchableOpacity>
-            <Text style={styles.DontTxt}>Don't have an Account?
-              <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
+            <Text style={styles.DontTxt}>Don't have an Account? <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
           </View>
+
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
     </Container>
