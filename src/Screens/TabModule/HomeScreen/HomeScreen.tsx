@@ -96,6 +96,10 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     socketServices.initialzeSocket(authUser?._id)
+
+    return () => {
+      socketServices.disconnectSocket()
+    }
   }, [])
 
   const renderProduct = ({ item }: any) => (

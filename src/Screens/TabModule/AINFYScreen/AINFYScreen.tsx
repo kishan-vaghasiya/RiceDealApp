@@ -33,6 +33,9 @@ const AINFYScreen = (props: AINFYScreenProps) => {
   const navigation = useNavigation();
   const { options } = useAuthContext()
 
+  // console.log("options: ", options);
+
+
   const [CurrentBtn, setCurrentBtn] = useState<string>('Positions');
   const [userProfile, setUserProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

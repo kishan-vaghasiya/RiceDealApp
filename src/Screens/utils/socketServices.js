@@ -1,14 +1,14 @@
 import { io } from "socket.io-client";
 
 
-const SOCKET_URL = 'http://192.168.0.104:4000';
+const SOCKET_URL = 'http://192.168.0.102:4000';
 // const SOCKET_URL = 'https://ricedeal.onrender.com';
 
 
 class WSService {
 
 
-    initialzeSocket = async (userId) => {
+    /* initialzeSocket = async (userId) => {
         // const authContext = useContext(AuthContext)
         // console.log(userId)
 
@@ -38,7 +38,36 @@ class WSService {
             console.log("=== socket is not initialized ===", error);
 
         }
-    }
+    } */
+    initialzeSocket = async (userId) => {
+        if (this.socket && this.socket.connected) {
+            console.warn("Socket already connected!");
+            return;
+        }
+
+        try {
+            this.socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling'],
+                query: { userId }
+            });
+
+            console.log('Initializing socket...');
+
+            this.socket.on("connect", () => {
+                console.log("=== Socket connected ===");
+            });
+
+            this.socket.on("disconnect", () => {
+                console.log("=== Socket disconnected ===");
+            });
+
+            this.socket.on("error", (error) => {
+                console.error("=== Socket error ===", error);
+            });
+        } catch (error) {
+            console.error("=== Socket initialization failed ===", error);
+        }
+    };
 
     on(event, data = {}) {
         this.socket.on(event, data)
@@ -50,6 +79,14 @@ class WSService {
 
     removeListener(listName) {
         this.socket.removeListener(listName)
+    }
+
+    disconnectSocket = () => {
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null; // Prevent duplicate connections
+            console.log("=== Socket manually disconnected ===");
+        }
     }
 }
 

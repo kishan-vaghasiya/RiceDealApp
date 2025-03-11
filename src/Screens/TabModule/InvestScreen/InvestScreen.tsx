@@ -27,6 +27,8 @@ const InvestScreen = (props: InvestScreenProps) => {
   const getAllUsers = async () => {
     return await Instance.get(`/v1/users/chat/users`, { headers: options }).then((response) => {
       setUsers(response.data.result)
+      // console.log("response: ", response?.data);
+
       setLoading(false)
     }).catch((error: any) => {
       console.error('Error fetching users:', error)
@@ -35,31 +37,24 @@ const InvestScreen = (props: InvestScreenProps) => {
   }
 
   useEffect(() => {
-    socketServices.on('newMessage', () => {
-      // console.log("message: ");
-      setMsgRefresh(!msgRefresh)
-      // setMessages((prevMessages) => [...prevMessages, message]);
+
+    socketServices.on('msg', () => {
+      // console.log(" ================================== received message ============================================== ");
+      getAllUsers()
     });
 
     return () => {
-      socketServices.removeListener(`newMessage`);
+      socketServices.removeListener('msg');
     };
-  }, [msgRefresh]);
+  }, []);
 
-  /* const renderItem = ({ item, index }: any) => (
-    <TouchableOpacity style={styles.card} onPress={() => { props.navigation.navigate('ChatScreen', { userId: item?._id, user: item }) }}>
-      <Image source={{ uri: item?.image }} style={styles.image} resizeMode='contain' />
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{item?.name}</Text>
-        <Text style={styles.subtitle}>{item?.email}</Text>
-        <Text style={styles.subtitle}>{item?.lastMessage}</Text>
-        <Text style={styles.subtitle}>{item?.lastMessageTime}</Text>
-        <Text style={styles.subtitle}>{item?.unreadCount}</Text>
-      </View>
-    </TouchableOpacity>
-  ); */
+  const handleChatNavigation = (senderId: any, item: any) => {
+    // socketServices.emit('seenMessages', { userId: authUser._id, senderId });
+    props.navigation.navigate('ChatScreen', { userId: senderId, user: item })
+  }
+
   const renderItem = ({ item, index }: any) => (
-    <TouchableOpacity style={styles.card} onPress={() => props.navigation.navigate('ChatScreen', { userId: item?._id, user: item })}>
+    <TouchableOpacity style={styles.card} onPress={() => handleChatNavigation(item?._id, item)}>
       <Image source={{ uri: item?.image }} style={styles.image} resizeMode='contain' />
 
       <View style={styles.textContainer}>
