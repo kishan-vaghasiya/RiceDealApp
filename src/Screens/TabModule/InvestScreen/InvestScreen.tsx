@@ -12,6 +12,7 @@ import moment from 'moment';
 interface InvestScreenProps {
   // route: { params: { changeSignInStatus: (flag: boolean) => void } }
   navigation: NavigationProp<any, any>;
+  route: any
 }
 
 
@@ -19,16 +20,18 @@ const InvestScreen = (props: InvestScreenProps) => {
   const { options, authUser } = useAuthContext()
   const [users, setUsers] = useState<any>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const categoryId = props?.route?.params?.categoryId
+
+  // console.log("props: ", props?.route?.params?.categoryId);
+
 
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [msgRefresh, setMsgRefresh] = useState<boolean>(false)
 
 
   const getAllUsers = async () => {
-    return await Instance.get(`/v1/users/chat/users`, { headers: options }).then((response) => {
+    return await Instance.get(`/v1/users/chat/users`, { params: { tradeId: categoryId }, headers: options }).then((response) => {
       setUsers(response.data.result)
-      // console.log("response: ", response?.data);
-
       setLoading(false)
     }).catch((error: any) => {
       console.error('Error fetching users:', error)
@@ -46,7 +49,7 @@ const InvestScreen = (props: InvestScreenProps) => {
     return () => {
       socketServices.removeListener('msg');
     };
-  }, []);
+  }, [categoryId]);
 
   const handleChatNavigation = (senderId: any, item: any) => {
     // socketServices.emit('seenMessages', { userId: authUser._id, senderId });
@@ -97,7 +100,7 @@ const InvestScreen = (props: InvestScreenProps) => {
 
   useEffect(() => {
     getAllUsers()
-  }, [loading, refreshing, msgRefresh])
+  }, [loading, refreshing, msgRefresh, categoryId])
 
 
   return (

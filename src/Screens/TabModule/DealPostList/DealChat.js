@@ -13,7 +13,7 @@ export default function DealChat({ route }) {
 
   console.log(`https://ricedeal.onrender.com/api/v1/messages/${userData?._id}`);
 
-  const { socket } = useSocketContext();
+
   const { authUser } = useAuthContext();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
@@ -31,13 +31,13 @@ export default function DealChat({ route }) {
     }
   }, [messages]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (socket) {
       setIsSocketReady(true);
     } else {
       setIsSocketReady(false);
     }
-  }, [socket]);
+  }, [socket]); */
 
   const sendMessage = async () => {
     if (!inputText.trim()) {
@@ -45,7 +45,7 @@ export default function DealChat({ route }) {
       return;
     }
 
-    if (isSocketReady && socket) {
+    if (isSocketReady) {
       const newMessage = {
         message: inputText,
         senderId: authUser?._id,

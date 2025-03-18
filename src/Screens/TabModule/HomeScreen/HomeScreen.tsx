@@ -25,6 +25,7 @@ import { Instance } from '../../../Api/Instance';
 import { GET_TRADES } from '../../../Api/Api_End_Points';
 import socketServices from '../../utils/socketServices';
 import { useAuthContext } from '../../../context/AuthContext';
+import DealCarousel from '../../Components/DealCarousel';
 
 interface HomeScreenProps {
   // route: { params: { changeSignInStatus: (flag: boolean) => void } }
@@ -76,7 +77,30 @@ const HomeScreen = (props: HomeScreenProps) => {
   const [categoriess, setCategoriess] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [latestProduct, setLatestProduct] = useState<any[]>([]);
+  const [adminProduct, setAdminProduct] = useState<any[]>([]);
+
+  const getSingleLatestProduct = async () => {
+    await Instance.get(`/v1/products/latestProduct`).then((response) => {
+      console.log("response: ", response.data.result)
+      setLatestProduct(response.data.result)
+    }).catch((error: any) => {
+      console.error('Error fetching latest product:', error);
+    })
+  }
+
+  const getAdminProduct = async () => {
+    await Instance.get(`/v1/products/adminProducts`).then((response) => {
+      console.log("response: ", response.data.result)
+      setAdminProduct(response.data.result)
+    }).catch((error: any) => {
+      console.error('Error fetching latest product:', error);
+    })
+  }
+
   useEffect(() => {
+    getSingleLatestProduct()
+    getAdminProduct()
     const fetchCategories = async () => {
       try {
         const response = await Instance.get(GET_TRADES.url);
@@ -102,25 +126,30 @@ const HomeScreen = (props: HomeScreenProps) => {
     }
   }, [])
 
+  const handleChatNavigation = (senderId: any, item: any) => {
+    navigation.navigate('ChatScreen', { userId: senderId, user: item })
+  }
+
   const renderProduct = ({ item }: any) => (
-    <View style={styles.productContainer}>
-      <Image source={{ uri: item.image }} style={styles.productImage} />
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productCode}>{item.code}</Text>
-    </View>
+    <TouchableOpacity onPress={() => handleChatNavigation(item?.user?._id, item?.user)} style={styles.productContainer}>
+      <Image source={{ uri: item?.image }} style={styles.productImage} />
+      <Text style={styles.productName}>{item?.name}</Text>
+      <Text style={styles.productCode}>₹ {item?.price}</Text>
+    </TouchableOpacity>
   );
+
   const renderCategory = ({ item }: any) => (
-    <TouchableOpacity
-      style={styles.categoryCard}
-      onPress={() => props.navigation.navigate('RiseListScreen', { categoryId: item._id })}
-    >
-      <Image source={{ uri: item.image }} style={styles.categoryImage} />
-      <Text style={styles.categoryText}>{item.name}</Text>
+    <TouchableOpacity style={styles.categoryCard} onPress={() => props.navigation.navigate('Chat', { categoryId: item._id })}>
+      {/* <TouchableOpacity style={styles.categoryCard} onPress={() => props.navigation.navigate('RiseListScreen', { categoryId: item._id })}> */}
+      <Image source={{ uri: item?.image }} style={styles.categoryImage} />
+      <Text style={styles.categoryText}>{item?.name}</Text>
     </TouchableOpacity>
   );
 
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
+
+  // console.log("latestProduct:", latestProduct);
 
   return (
 
@@ -128,17 +157,11 @@ const HomeScreen = (props: HomeScreenProps) => {
       statusBarStyle={'dark-content'}
       statusBarBackgroundColor={AllColors.white}
       backgroundColor={AllColors.white}>
-      <CustomHeader
-        type="invest"
-        screenName="Home"
-        onPressProfilePic={() => {
-          props.navigation.navigate('EditProfile');
-        }}
-      />
+      <CustomHeader type="invest" screenName="Home" onPressProfilePic={() => { props.navigation.navigate('EditProfile'); }} />
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={{ marginBottom: metrics.hp10 }}>
         {/* Product Carousel */}
         <FlatList
-          data={products}
+          data={adminProduct}
           horizontal
           renderItem={renderProduct}
           keyExtractor={item => item.id}
@@ -156,8 +179,10 @@ const HomeScreen = (props: HomeScreenProps) => {
         />
 
         <TouchableOpacity onPress={() => props.navigation.navigate('DealPostList')}>
-          <Image source={Images.Deal} style={styles.banner} />
+          {/* <Image source={Images.Deal} style={styles.banner} /> */}
+          <Image source={{ uri: latestProduct[0]?.image }} style={styles.banner} />
         </TouchableOpacity>
+        {/* <DealCarousel navigation={props.navigation} data={latestProduct} /> */}
 
         <Text style={styles.sectionTitle}>Categories</Text>
         {loading ? (
