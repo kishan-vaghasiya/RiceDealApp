@@ -28,6 +28,7 @@ import MobileOTP from "../Screens/LoginModule/LoginScreen/MobileOTP";
 import RiseListChat from "../Screens/TabModule/RiseListScreen/RiseListChat";
 import Subscribed from "../Screens/TabModule/ChoosePlan/Subscribed";
 import LoginWithMobile from "../Screens/LoginModule/LoginScreen/LoginWithMobile";
+import ForgotPassword from "../Screens/LoginModule/ForgotPassword/ForgotPassword";
 
 const options2 = {
   headerShown: false,
@@ -86,6 +87,7 @@ export default function Route() {
           <StackObj.Screen name='MobileOTP' component={MobileOTP} options={{ headerShown: false }} />
           <StackObj.Screen name='RiseListChat' component={RiseListChat} options={{ headerShown: false }} />
           <StackObj.Screen name='Subscribed' component={Subscribed} options={{ headerShown: false }} />
+          <StackObj.Screen name='ForgotPassword' component={ForgotPassword} options={{ headerShown: false }} />
         </StackObj.Navigator>
       </NavigationContainer>
     </View>

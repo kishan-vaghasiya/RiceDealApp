@@ -119,4 +119,11 @@ export const styles = StyleSheet.create({
     fontFamily: Fonts.AfacadMedium,
     color: AllColors.white,
   },
+  ForogotTxt:{
+    textAlign:"right",
+    marginRight:15,
+    fontFamily:Fonts.AfacadBold,
+    fontSize:18,
+    bottom:10
+  }
 });

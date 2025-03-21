@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     fontFamily: Fonts.AfacadRegular,
     fontSize: 18,
-    color: AllColors.subText,
+    color: AllColors.black,
     marginTop: metrics.hp0_5,
   },
   otpTextWhite: {
@@ -97,7 +97,27 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: Fonts.AfacadBold,
     fontSize: 18,
-    color: AllColors.white,
+    color: AllColors.black,
     marginTop: metrics.hp0_5,
   },
+  submitButton: {
+    backgroundColor: AllColors.primary400, // Add your primary color for the button
+    paddingVertical: metrics.hp1_5, // Padding to make the button larger
+    paddingHorizontal: metrics.hp8, // Horizontal padding
+    borderRadius: metrics.hp1, // Rounded corners
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: metrics.hp4, // Margin to separate from other elements
+    elevation: 3, // Add shadow for Android
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  submitButtonText: {
+    fontFamily: Fonts.AfacadBold, // Use the appropriate font
+    fontSize: 18, // Adjust the font size to make it prominent
+    color: AllColors.white, // Text color white for contrast
+    textAlign: 'center', // Center align the text
+  }
 });
