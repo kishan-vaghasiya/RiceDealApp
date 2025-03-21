@@ -88,7 +88,7 @@ const LoginScreen = (props: LoginScreenProps) => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => { SendOTP("OTP") }} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
-              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
+              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with Mobile</Text>
             </TouchableOpacity>
             <Text style={styles.DontTxt}>Don't have an Account? <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
           </View>

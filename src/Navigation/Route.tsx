@@ -27,6 +27,7 @@ import MobileOTP from "../Screens/LoginModule/LoginScreen/MobileOTP";
 // import EmailLogin from "../Screens/LoginModule/LoginScreen/EmailLogin";
 import RiseListChat from "../Screens/TabModule/RiseListScreen/RiseListChat";
 import Subscribed from "../Screens/TabModule/ChoosePlan/Subscribed";
+import LoginWithMobile from "../Screens/LoginModule/LoginScreen/LoginWithMobile";
 
 const options2 = {
   headerShown: false,
@@ -70,13 +71,14 @@ export default function Route() {
           <StackObj.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
           <StackObj.Screen name="LoginDetails" component={LoginDetails} options={{ headerShown: false }} />
           <StackObj.Screen name={"LoginScreen"} component={LoginScreen} options={options2} />
+          <StackObj.Screen name={"LoginWithMobile"} component={LoginWithMobile} options={options2} />
 
           <StackObj.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
           <StackObj.Screen name={"EditProfile"} component={EditProfile} options={options2} />
           <StackObj.Screen name={"ChatScreen"} component={ChatScreen} options={options2} />
           <StackObj.Screen name={"AboutProfileScreen"} component={AboutProfileScreen} options={options2} />
           <StackObj.Screen name={"AddItem"} component={AddItem} options={options2} />
-          {/* <StackObj.Screen name={"LoginOTP"} component={LoginOTP} options={options2} /> */}
+          <StackObj.Screen name={"LoginOTP"} component={LoginOTP} options={options2} />
           <StackObj.Screen name={'RiseListScreen'} component={RiseListScreen} options={{ headerShown: false }} />
           <StackObj.Screen name='DealPostList' component={DealPostList} options={{ headerShown: false }} />
           <StackObj.Screen name='DealChat' component={DealChat} options={{ headerShown: false }} />

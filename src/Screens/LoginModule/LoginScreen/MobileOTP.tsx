@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  StyleSheet,
-  Platform,
-  Keyboard
-} from 'react-native';
+import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, StyleSheet, Platform, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Container } from '../../../Components/Container/Container';
 import { AllColors } from '../../../Constants/COLORS';
@@ -18,16 +8,17 @@ import metrics from '../../../Constants/Metrics';
 import { Fonts } from '../../../Constants/Fonts';
 import Animated from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
+import { Instance } from '../../../Api/Instance';
 
 export default function MobileOTP() {
-   
-  const navigation = useNavigation('')
+
+  const navigation = useNavigation<any>()
 
   const [userMobileNumber, setUserMobileNumber] = useState('');
   const [userMobileNumberError, setUserMobileNumberError] = useState('');
 
-  const validateMobileNumber = (number) => {
-    const regex = /^[0-9]{10}$/; 
+  const validateMobileNumber = (number: any) => {
+    const regex = /^[0-9]{10}$/;
     if (!regex.test(number)) {
       setUserMobileNumberError('Please enter a valid 10-digit mobile number.');
     } else {
@@ -36,67 +27,52 @@ export default function MobileOTP() {
     setUserMobileNumber(number);
   };
 
-  const handleSubmit = () => {
-    if (userMobileNumberError === '') {
-      console.log('Valid mobile number:', userMobileNumber);
-    } else {
-      console.log('Invalid mobile number');
+  const handleSubmit = async () => {
+    console.log("userMobileNumber.toString().length !== 10: ", userMobileNumber.length);
+
+    if (userMobileNumber === '') {
+      setUserMobileNumberError('Please enter a valid mobile number');
+      return;
+    }
+
+    try {
+      console.log(" ================= api hitted =================");
+
+      const response = await Instance.post(`/v1/users/loginWithMobile`, { mobile: userMobileNumber });
+
+      console.log('response: ', response.data);
+      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: userMobileNumber });
+
+    } catch (error: any) {
+      console.error('Error:', error);
+      setUserMobileNumberError(error?.response?.data?.msg || "Opp's something went wrong.");
     }
   };
 
+
   return (
-    <Container
-      statusBarStyle="dark-content"
-      statusBarBackgroundColor={AllColors.white}
-      backgroundColor={AllColors.white}>
-      
-      <KeyboardAwareScrollView
-        style={styles.marginView}
-        enableOnAndroid
-        extraScrollHeight={Platform.OS === 'ios' ? 0 : 40}
-        showsVerticalScrollIndicator={false}
-        enableAutomaticScroll
-        keyboardShouldPersistTaps="handled">
-        
+    <Container statusBarStyle="dark-content" statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+
+      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroidextraScrollHeight={Platform.OS === 'ios' ? 0 : 40} showsVerticalScrollIndicator={false} enableAutomaticScrollkeyboardShouldPersistTaps="handled">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.container}>
-            <Animated.Image
-              style={styles.logoImage}
-              resizeMode="contain"
-              sharedTransitionTag="Tag"
-              source={Images.Logo}
-            />
-            
+            <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
+
             <Text style={styles.phoneText}>Verify With Mobile Number</Text>
-            
-            <Animated.Image
-              style={styles.mailImage}
-              resizeMode="contain"
-              source={Images.mobilephone}
-            />
-            
+
+            <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.mobilephone} />
+
             <Text style={styles.phoneSubText}>Mobile Number</Text>
-            
+
             <View style={styles.inputContainer}>
               <View style={styles.InputView}>
                 <Text style={styles.countryCode}>+91</Text>
-                <TextInput
-                  style={styles.textInputView}
-                  cursorColor={AllColors.black}
-                  inputMode="numeric"
-                  onChangeText={validateMobileNumber}
-                  value={userMobileNumber}
-                  placeholder="000 000 0000"
-                  placeholderTextColor={AllColors.black}
-                  maxLength={10}
-                />
+                <TextInput style={styles.textInputView} cursorColor={AllColors.black} inputMode="numeric" onChangeText={validateMobileNumber} value={userMobileNumber} placeholder="000 000 0000" placeholderTextColor={AllColors.black} maxLength={10} />
               </View>
-              {userMobileNumberError ? (
-                <Text style={styles.errorText}>{userMobileNumberError}</Text>
-              ) : null}
+              {userMobileNumberError ? (<Text style={styles.errorText}>{userMobileNumberError}</Text>) : null}
             </View>
-            
-            <TouchableOpacity onPress={()=>navigation.navigate('LoginOTP')} style={[styles.touchView,{marginTop:50}]}>
+
+            <TouchableOpacity onPress={handleSubmit} style={[styles.touchView, { marginTop: 50 }]}>
               <Text style={styles.buttonInsideText}>Sign in with Number</Text>
             </TouchableOpacity>
           </View>
@@ -167,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: AllColors.black,
     fontFamily: Fonts.AfacadBold,
-    left:5
+    left: 5
   },
   errorText: {
     color: AllColors.red,

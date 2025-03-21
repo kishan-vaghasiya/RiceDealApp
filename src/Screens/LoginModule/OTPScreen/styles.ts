@@ -1,7 +1,7 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
-import {AllColors} from '../../../Constants/COLORS';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { AllColors } from '../../../Constants/COLORS';
 import metrics from '../../../Constants/Metrics';
-import {Fonts, fontSize} from '../../../Constants/Fonts';
+import { Fonts, fontSize } from '../../../Constants/Fonts';
 
 export const styles = StyleSheet.create({
   container: {
@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
     marginBottom: Platform.OS == 'android' ? 0 : 150,
     flex: 1,
   },
-  viewOtpinput: {paddingBottom: metrics.hp3},
+  viewOtpinput: { paddingBottom: metrics.hp3 },
   viewRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     marginTop: '7%',
   },
   textInput: {
-    width: metrics.hp9,
+    width: metrics.hp5_5,
     height: metrics.hp6,
     borderWidth: 0.5,
     borderColor: AllColors.lightGray,

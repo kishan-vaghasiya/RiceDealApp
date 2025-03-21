@@ -358,6 +358,7 @@ const LoginDetails = (props: LoginDetailsProps) => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => props.navigation.navigate('MobileOTP')} style={[styles.touchView, { backgroundColor: AllColors.primary300 }]}>
+                {/* <TouchableOpacity onPress={() => props.navigation.navigate('LoginOTP')} style={[styles.touchView, { backgroundColor: AllColors.primary300 }]}> */}
                 <Text style={[styles.buttonInsideText, { color: AllColors.black }]}>Sign in with Number</Text>
               </TouchableOpacity>
             </View>
