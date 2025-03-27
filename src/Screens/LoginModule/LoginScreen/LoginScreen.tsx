@@ -75,7 +75,6 @@ const LoginScreen = (props: LoginScreenProps) => {
   }, []);
   return (
     <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-
       <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == "ios" ? 0 : 40} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
         <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
           <View>
@@ -84,11 +83,9 @@ const LoginScreen = (props: LoginScreenProps) => {
             <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.tick} />
             <Text style={styles.phoneSubText}>{"Select your Login"}</Text>
             <View style={styles.InputView}></View>
-
             <TouchableOpacity onPress={() => { SendOTP("Email") }} style={styles.touchView}>
               <Text style={[styles.buttonInsideText,]}>Login with E-mail</Text>
             </TouchableOpacity>
-
             <TouchableOpacity onPress={() => { SendOTP("OTP") }} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
               <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
             </TouchableOpacity>

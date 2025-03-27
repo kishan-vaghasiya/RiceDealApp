@@ -118,10 +118,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
-
-
   const scrollX = React.useRef(new Animated.Value(0)).current;
-
   return (
 
     <Container
