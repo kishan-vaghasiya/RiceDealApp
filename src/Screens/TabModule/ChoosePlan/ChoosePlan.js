@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, Alert, ScrollView } from 'react-native';
 import { Container } from '../../../Components/Container/Container';
 import { AllColors } from '../../../Constants/COLORS';
 import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
@@ -69,7 +69,7 @@ export default function ChoosePlan({ navigation }) {
 
   const handleSubscription = async () => {
     // console.log(" ========================= clicked subscription ===========================================");
-    // console.log("plan: ", selectedPlanIndex);
+    // console.log("plan: ", options);
 
     setIsLoading(true)
     return await Instance.post(`/v1/subscriptions/apply/subscrition/${selectedPlanIndex?._id}`, {}, { headers: options }).then((response) => {
@@ -93,40 +93,40 @@ export default function ChoosePlan({ navigation }) {
     getAllSubscriptions()
   }, [loading])
 
-
-
   return (
-    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Image source={Images.BackButton} resizeMode="contain" style={styles.backButtonImage} />
-      </TouchableOpacity>
+    <ScrollView>
+      <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Image source={Images.BackButton} resizeMode="contain" style={styles.backButtonImage} />
+        </TouchableOpacity>
 
-      <View>
-        <Text style={styles.headerText}>Choose{'\n'}Your Plan</Text>
-      </View>
+        <View>
+          <Text style={styles.headerText}>Choose{'\n'}Your Plan</Text>
+        </View>
 
 
-      <View style={styles.plansContainer}>
-        {plans.map((plan, index) => (
-          <TouchableOpacity key={index} style={[styles.planCard, selectedPlanIndex?._id === plan?._id && styles.selectedPlanCard,]} onPress={() => handlePlanSelect(plan)}>
-            < Text style={[styles.planPrice, selectedPlanIndex?._id === plan?._id && styles.selectedPlanPrice,]} > {plan?.name}</Text>
-            <Text style={[styles.planPrice, selectedPlanIndex?._id === plan?._id && styles.selectedPlanPrice,]}>{plan?.amount}</Text>
-            <Text style={[styles.planDuration, selectedPlanIndex?._id === plan?._id && styles.selectedPlanDuration,]}>{plan?.duration} Months</Text>
-          </TouchableOpacity>
-        ))
-        }
-      </View >
+        <View style={styles.plansContainer}>
+          {plans.map((plan, index) => (
+            <TouchableOpacity key={index} style={[styles.planCard, selectedPlanIndex?._id === plan?._id && styles.selectedPlanCard,]} onPress={() => handlePlanSelect(plan)}>
+              < Text style={[styles.planPrice, selectedPlanIndex?._id === plan?._id && styles.selectedPlanPrice,]} > {plan?.name}</Text>
+              <Text style={[styles.planPrice, selectedPlanIndex?._id === plan?._id && styles.selectedPlanPrice,]}>{plan?.amount}</Text>
+              <Text style={[styles.planDuration, selectedPlanIndex?._id === plan?._id && styles.selectedPlanDuration,]}>{plan?.duration} Months</Text>
+            </TouchableOpacity>
+          ))
+          }
+        </View >
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>Choose the best plan according to your needs!{'\n'}You can always upgrade{'\n'}later.
-        </Text>
-      </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoText}>Choose the best plan according to your needs!{'\n'}You can always upgrade{'\n'}later.
+          </Text>
+        </View>
 
-      {/* <TouchableOpacity style={styles.continueButton} onPress={handleContinue}> */}
-      <TouchableOpacity style={styles.continueButton} onPress={handleSubscription}>
-        <Text style={styles.continueButtonText}>{isLoading ? "Loading..." : "Continue"}</Text>
-      </TouchableOpacity>
-    </Container >
+        {/* <TouchableOpacity style={styles.continueButton} onPress={handleContinue}> */}
+        <TouchableOpacity style={styles.continueButton} onPress={handleSubscription}>
+          <Text style={styles.continueButtonText}>{isLoading ? "Loading..." : "Continue"}</Text>
+        </TouchableOpacity>
+      </Container >
+    </ScrollView>
   );
 }
 
@@ -205,6 +205,7 @@ const styles = StyleSheet.create({
     marginTop: '20%',
     justifyContent: 'center',
     marginHorizontal: 20,
+    marginBottom: 50
   },
   continueButtonText: {
     fontSize: 18,

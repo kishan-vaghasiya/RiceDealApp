@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 
-const SOCKET_URL = 'http://192.168.0.102:4000';
+const SOCKET_URL = 'http://192.168.0.107:4000';
 // const SOCKET_URL = 'https://ricedeal.onrender.com';
 
 

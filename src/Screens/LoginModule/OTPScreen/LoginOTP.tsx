@@ -1,21 +1,12 @@
-import { CommonActions, NavigationProp } from '@react-navigation/native';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
-import {
-  Image,
-  ImageBackground,
-  Keyboard,
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { CommonActions, NavigationProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, Keyboard, SafeAreaView, Text, TouchableWithoutFeedback, View,Animated, TouchableOpacity } from 'react-native';
 import { Images } from '../../../Assets/Images';
-import { AllColors } from '../../../Constants/COLORS';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styles } from './styles';
-import Animated from 'react-native-reanimated';
+import { Instance } from '../../../Api/Instance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OtpInput from '../../../Components/otpInput/OtpInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface LoginScreenProps {
   route: { params: Mnumber };
@@ -26,274 +17,115 @@ type Mnumber = {
   Number: string;
 };
 
-interface inputRef extends RefObject<inputRef> {
-  focus: () => void;
-}
-
 const LoginOTP = (props: LoginScreenProps) => {
-  const [number, onChangeNumber] = useState('');
-  const [isSelected, setIsSelected] = useState(Boolean);
-  const [otpCodeHasError, setotpCodeHasError] = useState<boolean>(false);
-  const [otpCodeErrorString, setotpCodeErrorString] = useState<string>('');
+  const route = useRoute<any>();
+  console.log("sessionId",route?.params?.sessionId,)
+  console.log("otpString",route?.params?.otpString,)
+  console.log("mobile",route?.params?.mobile,)
 
-  const textInput0 = useRef<inputRef | undefined>(null);
-  const textInput1 = useRef<inputRef | undefined>(null);
-  const textInput2 = useRef<inputRef | undefined>(null);
-  const textInput3 = useRef<inputRef | undefined>(null);
-  const textInput4 = useRef<inputRef | undefined>(null);
-
-  const [OTP1, setOTP1] = useState<string>('');
-  const [OTP2, setOTP2] = useState<string>('');
-  const [OTP3, setOTP3] = useState<string>('');
-  const [OTP4, setOTP4] = useState<string>('');
-
-  const [isFocus1, setIsFocused1] = useState<boolean>(false);
-  const [isFocus2, setIsFocused2] = useState<boolean>(false);
-  const [isFocus3, setIsFocused3] = useState<boolean>(false);
-  const [isFocus4, setIsFocused4] = useState<boolean>(false);
-
-  const [otps, setOtp] = useState('');
-
-  const CELL_COUNT = 4; // Change to the desired OTP length
-  const HASH_CODE = 'YOUR_HASH_CODE';
-
-  const [timeLeft, setTimeLeft] = useState(30); // Starting value for the countdown
+  const [otp, setOtp] = useState<string>(''); 
+  console.log("OTP entered: ", otp); 
+  const [otpCodeHasError, setOtpCodeHasError] = useState<boolean>(false);
+  const [otpCodeErrorString, setOtpCodeErrorString] = useState<string>('');
+  const [timeLeft, setTimeLeft] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
-
 
   useEffect(() => {
     let timer: any;
-
     if (isRunning && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft(prevTime => prevTime - 1); // Decrease time by 1 second
+        setTimeLeft(prevTime => prevTime - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      setIsRunning(false); // Stop the timer when it reaches 0
+      setIsRunning(false);
     }
 
-    return () => clearInterval(timer); // Clear the interval when component unmounts or timer resets
+    return () => clearInterval(timer);
   }, [isRunning, timeLeft]);
-
-  useEffect(() => {
-    startTimer();
-  }, []);
 
   const startTimer = () => {
     setIsRunning(true);
   };
 
-  async function onConfirm(otp?: string) {
-    console.log('ssssssssssss', otp);
-    if (!isNaN(Number(OTP1 + OTP2 + OTP3 + OTP4))) {
-      let token: string = '';
-
-
-      props.navigation.dispatch(
-        CommonActions.reset({
-          index: 3,
-          routes: [{ name: 'TabNavigator' }],
-        }),
-      );
-    } else {
-      setotpCodeErrorString('The otp must be a number.');
-      setotpCodeHasError(true);
-    }
-  }
-  function onChangeText(num: string, index: number) {
-    if (num !== 'Backspace') {
-      if (!isNaN(Number(num))) {
-        setotpCodeErrorString('');
-        setotpCodeHasError(false);
-        if (index == 0) {
-          setOTP1(num);
-          textInput1?.current?.focus();
-        } else if (index == 1) {
-          setOTP2(num);
-          textInput2?.current?.focus();
-        } else if (index == 2) {
-          setOTP3(num);
-          textInput3?.current?.focus();
-        } else if (index == 3) {
-          setOTP4(num);
-          textInput4?.current?.focus();
-          onConfirm('1234');
-          Keyboard.dismiss();
-        }
-      } else {
-        setotpCodeErrorString('The otp must be a number.');
-        setotpCodeHasError(true);
-      }
-    } else {
-      if (index == 0) {
-        setOTP1('');
-      } else if (index == 1) {
-        !OTP2 && textInput0?.current?.focus();
-        setOTP2('');
-      } else if (index == 2) {
-        !OTP3 && textInput1?.current?.focus();
-        setOTP3('');
-      } else if (index == 3) {
-        !OTP4 && textInput2?.current?.focus();
-        setOTP4('');
-      }
-    }
-  }
-
   const resetTimer = () => {
-    setTimeLeft(30); // Reset the timer to the initial value
+    setTimeLeft(30);
     setIsRunning(true);
   };
+
+  useEffect(() => {
+    startTimer();
+  }, []);
+
+  async function onConfirm(otp: string) {
+    const otpString = otp.join(''); 
+    
+    const otpRegex = /^\d{6}$/; 
+    
+    if (otpRegex.test(otpString)) {
+      try {
+        const response = await Instance.post(`/v1/users/verify/otp`, {
+          sessionId: route?.params?.sessionId,
+          otp: otpString,
+          mobile: route?.params?.mobile,
+        });
+        console.log("API Response: ", response);  
+  
+        if (response?.data?.token) {
+          await AsyncStorage.setItem('userToken', response?.data?.token);
+          props.navigation.dispatch(
+            CommonActions.reset({
+              index: 3,
+              routes: [{ name: 'TabNavigator' }],
+            }),
+          );
+        } else {
+          setOtpCodeErrorString(response?.data?.msg || "Something went wrong");
+          setOtpCodeHasError(true);
+        }
+      } catch (error) {
+        console.error("API Error: ", error); 
+        setOtpCodeErrorString('There was an error verifying the OTP');
+        setOtpCodeHasError(true);
+      }
+    } else {
+      setOtpCodeErrorString('OTP must be 6 digits.');
+      setOtpCodeHasError(true);
+    }
+  }
+  
+  
 
   return (
     <ImageBackground style={styles.container}>
       <SafeAreaView></SafeAreaView>
-      <KeyboardAwareScrollView
-        style={styles.marginView}
-        enableOnAndroid={true}
-        extraScrollHeight={0}
-        enableAutomaticScroll={true}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}>
+      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={0} enableAutomaticScroll={true} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
           <View>
-            <Animated.Image
-              style={styles.mailImage}
-              resizeMode="contain"
-              source={Images.mobilephone}
-            />
-            <Text
-              style={
-                styles.phoneText
-              }>{`Enter OTP sent to \n${props?.route?.params?.CountryCode} ${props?.route?.params?.Number}`}</Text>
-            <Text style={styles.phoneSubText}>
-              {'We will send you a confirmation code'}
-            </Text>
+            <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.mobilephone} />
+            <Text style={styles.phoneText}>{`Enter OTP sent to \n${props?.route?.params?.CountryCode} ${props?.route?.params?.Number}`}</Text>
+            <Text style={styles.phoneSubText}>{'We will send you a confirmation code'}</Text>
             <Text style={styles.phoneNumberText}>{'Verification Code'}</Text>
 
-            <View style={styles.viewOtpinput}>
-              <View style={styles.viewRow}>
-                <TextInput //@ts-ignore
-                  ref={textInput0}
-                  autoCorrect={false}
-                  autoFocus={true}
-                  placeholder=""
-                  value={OTP1}
-                  maxLength={1}
-                  selectionColor={AllColors.black}
-                  onKeyPress={e => {
-                    onChangeText(e.nativeEvent.key, 0);
-                  }}
-                  cursorColor={AllColors.black}
-                  style={[
-                    styles.textInput,
-                    {
-                      borderWidth: isFocus1 ? 0.5 : 0,
-                      borderColor: isFocus1
-                        ? AllColors.shade2
-                        : AllColors.textInput,
-                    },
-                  ]}
-                  onFocus={() => setIsFocused1(true)} // Set focus state to true
-                  onBlur={() => setIsFocused1(false)}
-                  keyboardType="numeric"
-                />
-                <TextInput //@ts-ignore
-                  ref={textInput1}
-                  autoCorrect={false}
-                  placeholder=""
-                  value={OTP2}
-                  maxLength={1}
-                  selectionColor={AllColors.white}
-                  onKeyPress={e => {
-                    onChangeText(e.nativeEvent.key, 1);
-                  }}
-                  cursorColor={AllColors.white}
-                  style={[
-                    styles.textInput,
-                    {
-                      borderWidth: isFocus2 ? 0.5 : 0,
-                      borderColor: isFocus2
-                        ? AllColors.shade2
-                        : AllColors.textInput,
-                    },
-                  ]}
-                  onFocus={() => setIsFocused2(true)} // Set focus state to true
-                  onBlur={() => setIsFocused2(false)}
-                  keyboardType="numeric"
-                />
-                <TextInput //@ts-ignore
-                  ref={textInput2}
-                  autoCorrect={false}
-                  placeholder=""
-                  value={OTP3}
-                  maxLength={1}
-                  selectionColor={AllColors.white}
-                  onKeyPress={e => {
-                    onChangeText(e.nativeEvent.key, 2);
-                  }}
-                  cursorColor={AllColors.white}
-                  style={[
-                    styles.textInput,
-                    {
-                      borderWidth: isFocus3 ? 0.5 : 0,
-                      borderColor: isFocus3
-                        ? AllColors.shade2
-                        : AllColors.textInput,
-                    },
-                  ]}
-                  onFocus={() => setIsFocused3(true)} // Set focus state to true
-                  onBlur={() => setIsFocused3(false)}
-                  keyboardType="numeric"
-                />
+           <View style={{marginTop:20}}>
+           <OtpInput otp={otp} setOtp={setOtp} />
+           </View>
 
-                <TextInput //@ts-ignore
-                  ref={textInput3}
-                  autoCorrect={false}
-                  placeholder=""
-                  value={OTP4}
-                  maxLength={1}
-                  selectionColor={AllColors.white}
-                  onKeyPress={e => {
-                    onChangeText(e.nativeEvent.key, 3);
-                  }}
-                  cursorColor={AllColors.white}
-                  style={[
-                    styles.textInput,
-                    {
-                      borderWidth: isFocus4 ? 0.5 : 0,
-                      borderColor: isFocus4
-                        ? AllColors.shade2
-                        : AllColors.textInput,
-                    },
-                  ]}
-                  onFocus={() => setIsFocused4(true)} // Set focus state to true
-                  onBlur={() => setIsFocused4(false)}
-                  keyboardType="numeric"
-                />
-              </View>
+            <View style={styles.viewOtpinput}>
               {otpCodeHasError && (
                 <View>
                   <Text style={styles.textError}>{otpCodeErrorString}</Text>
                 </View>
               )}
             </View>
-            {timeLeft == 0 ? (
-              <Text
-                style={styles.otpTextWhite}
-                onPress={() => {
-                  resetTimer();
-                }}>{`Resend OTP`}</Text>
-            ) : (
-              <Text
-                style={
-                  styles.otpText
-                }>{`Resend OTP in ${timeLeft} Seconds...`}</Text>
-            )}
+            <TouchableOpacity
+          style={styles.submitButton}
+       onPress={() => onConfirm(otp)} 
+             >
+  <Text style={styles.submitButtonText}>Submit</Text>
+</TouchableOpacity>
+    
           </View>
+       
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
     </ImageBackground>

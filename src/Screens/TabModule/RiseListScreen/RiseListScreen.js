@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator
-} from 'react-native';
-import axios from 'axios'; 
+import { StyleSheet, Text, TextInput, View, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { AllColors } from '../../../Constants/COLORS';
 import metrics from '../../../Constants/Metrics';
 import { Fonts } from '../../../Constants/Fonts';
@@ -18,9 +8,9 @@ import { Instance } from '../../../Api/Instance';
 import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
 
 export default function RiseListScreen({ navigation, route }) {
-  const [data, setData] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { categoryId } = route.params;
 
   useEffect(() => {
@@ -32,7 +22,7 @@ export default function RiseListScreen({ navigation, route }) {
         } else {
           setData(response.data.result);
         }
-        setLoading(false); 
+        setLoading(false);
       } catch (err) {
         setError('Failed to fetch data');
         setLoading(false);
@@ -40,13 +30,13 @@ export default function RiseListScreen({ navigation, route }) {
     };
 
     fetchData();
-  }, [categoryId]); 
+  }, [categoryId]);
 
-    if (loading) {
+  if (loading) {
     return (
       <Container backgroundColor={AllColors.white} statusBarBackgroundColor={AllColors.white} statusBarStyle="dark-content">
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={AllColors.primary900} /> 
+          <ActivityIndicator size="large" color={AllColors.primary900} />
         </View>
       </Container>
     );
@@ -63,10 +53,8 @@ export default function RiseListScreen({ navigation, route }) {
   }
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate('RiseListChat', { itemData: item })}>
-      <Image source={{ uri: item.image }}style={styles.image} />
+    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('RiseListChat', { itemData: item })}>
+      <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.city}>{item.trade.name}</Text>
@@ -78,24 +66,9 @@ export default function RiseListScreen({ navigation, route }) {
 
   return (
     <Container backgroundColor={AllColors.white} statusBarBackgroundColor={AllColors.white} statusBarStyle="dark-content">
-         <CustomHeader
-          type="back"
-          screenName="Rise List"
-          onPressBack={() => {
-          navigation.goBack();
-           }}
-          />
-      <TextInput
-        style={styles.textInputView}
-        cursorColor={AllColors.black}
-        placeholder="City Name"
-      />
-      <FlatList
-        data={data} 
-        renderItem={renderItem}
-        keyExtractor={(item) => item._id} 
-        contentContainerStyle={styles.flatlistContainer}
-      />
+      <CustomHeader type="back" screenName="Rise List" onPressBack={() => { navigation.goBack(); }} />
+      <TextInput style={styles.textInputView} cursorColor={AllColors.black} placeholder="City Name" />
+      <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item._id} contentContainerStyle={styles.flatlistContainer} />
     </Container>
   );
 }
@@ -154,7 +127,7 @@ const styles = StyleSheet.create({
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   errorText: {
     fontSize: 18,

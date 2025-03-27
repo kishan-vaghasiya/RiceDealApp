@@ -26,68 +26,45 @@ export default function DealPostList({ navigation }) {
     fetchData();
   }, []);
 
+  const handleChatNavigation = (senderId, item) => {
+    // socketServices.emit('seenMessages', { userId: authUser._id, senderId });
+    navigation.navigate('ChatScreen', { userId: senderId, user: item })
+  }
+
   if (loading) {
     return (
-      <Container
-        statusBarStyle={'dark-content'}
-        statusBarBackgroundColor={AllColors.white}
-        backgroundColor={AllColors.white}>
-        <CustomHeader
-          type="back"
-          screenName="Deals For Today"
-          onPressBack={() => {
-            navigation.goBack();
-          }}
-        />
-        <ActivityIndicator
-          size="large"
-          color={AllColors.primary900}
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        />
+      <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+        <CustomHeader type="back" screenName="Deals For Today" onPressBack={() => { navigation.goBack(); }} />
+        <ActivityIndicator size="large" color={AllColors.primary900} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />
       </Container>
     );
   }
 
   return (
-    <Container
-      statusBarStyle={'dark-content'}
-      statusBarBackgroundColor={AllColors.white}
-      backgroundColor={AllColors.white}>
-      <CustomHeader
-        type="back"
-        screenName="Deals For Today"
-        onPressBack={() => {
-          navigation.goBack();
-        }}
-      />
+    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+      <CustomHeader type="back" screenName="Deals For Today" onPressBack={() => { navigation.goBack(); }} />
       <FlatList
         data={data}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={{ marginTop: 13, bottom: 3 }}>
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() => navigation.navigate('DealChat', { userData: item })}>
-              <Image
-                source={{ uri: item.image }}
-                resizeMode="contain"
-                style={styles.image}
-              />
+            {/* <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate('DealChat', { userData: item })}> */}
+            <TouchableOpacity style={styles.itemContainer} onPress={() => handleChatNavigation(item?.user?._id, item?.user)}>
+              <Image source={{ uri: item.image }} resizeMode="contain" style={styles.image} />
               <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                   <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.amount}>
-                    {moment(item.createdAt).format('MMM D, YYYY, h:mm A')}
-                  </Text>
+                  <Text style={styles.amount}>{moment(item.createdAt).format('MMM D, YYYY, h:mm A')}</Text>
                 </View>
                 <Text style={styles.amountText}>₹ {item.price}</Text>
               </View>
             </TouchableOpacity>
           </View>
-        )}
+        )
+        }
       />
-    </Container>
+    </Container >
   );
 }
 

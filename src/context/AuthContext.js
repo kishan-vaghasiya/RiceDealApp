@@ -20,7 +20,6 @@ export const AuthContextProvider = ({ children }) => {
     const loadUser = async () => {
       try {
         const user = await AsyncStorage.getItem('userToken');
-        // console.log("token: ", user);
 
         if (user) {
           setToken(user);

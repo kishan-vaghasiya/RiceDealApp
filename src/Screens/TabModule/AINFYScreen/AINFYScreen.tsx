@@ -143,6 +143,9 @@ const AINFYScreen = (props: AINFYScreenProps) => {
     );
   };
 
+  // console.log("userProfile: ", userProfile);
+
+
   return (
     <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
       <View style={styles.header}>
@@ -165,9 +168,11 @@ const AINFYScreen = (props: AINFYScreenProps) => {
             </View>
           </View>
 
-          <TouchableOpacity onPress={() => { props.navigation.navigate('AddItem'); }}>
-            <Image source={Images.additem} style={styles.addItemImage} resizeMode="contain" />
-          </TouchableOpacity>
+          {userProfile?.subscriptionId?.status == "inactive" ? <Text style={styles.addItemImage}>In-Active</Text> :
+            <TouchableOpacity onPress={() => { props.navigation.navigate('AddItem'); }}>
+              <Image source={Images.additem} style={styles.addItemImage} resizeMode="contain" />
+            </TouchableOpacity>
+          }
           {/* <Text>Add Product</Text> add here text */}
         </View>
       </View>
