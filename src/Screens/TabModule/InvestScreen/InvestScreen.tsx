@@ -15,7 +15,6 @@ interface InvestScreenProps {
   route: any
 }
 
-
 const InvestScreen = (props: InvestScreenProps) => {
   const { options, authUser } = useAuthContext()
   const [users, setUsers] = useState<any>([])
@@ -36,7 +35,7 @@ const InvestScreen = (props: InvestScreenProps) => {
     }).catch((error: any) => {
       console.error('Error fetching users:', error)
       setLoading(false)
-    })
+    })  
   }
 
   useEffect(() => {
@@ -61,7 +60,6 @@ const InvestScreen = (props: InvestScreenProps) => {
       <Image source={{ uri: item?.image }} style={styles.image} resizeMode='contain' />
 
       <View style={styles.textContainer}>
-        {/* User Name and Unread Count Badge */}
         <View style={styles.headerContainer}>
           <Text style={styles.title}>{item?.name}</Text>
 

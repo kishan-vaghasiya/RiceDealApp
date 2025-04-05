@@ -68,10 +68,10 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
     }
   }, [userId]);
 
+
+
   useEffect(() => {
     if (authUser) {
-
-      // Listen for incoming messages
       socketServices.on('receiveMessage', (message: Message) => {
         console.log('Received message:', message);
         socketServices.emit('seenMessages', { userId: authUser._id, senderId: userId });
@@ -79,7 +79,6 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
       });
-
       return () => {
         socketServices.removeListener('receiveMessage');
         socketServices.removeListener('seenMessages');
@@ -94,7 +93,6 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
 
       socketServices.emit('sendMessage', newMessage);
       setInputText('');
-      // setListRefresh(!listRefresh)
     }
   };
 
