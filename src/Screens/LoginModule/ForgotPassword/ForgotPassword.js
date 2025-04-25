@@ -75,7 +75,6 @@ export default function ForgotPassword({navigation}) {
           password: newPassword,
         });
         setLoading(false);
-        console.log('Server Response:', response.data);
         if (response.data.success) {
           showToast('Password updated successfully', 'success');
           navigation.navigate('LoginDetails');

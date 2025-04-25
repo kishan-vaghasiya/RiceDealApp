@@ -1,33 +1,31 @@
-import { NavigationProp } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Keyboard, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, } from 'react-native';
-import { Images } from '../../../Assets/Images';
-import { AllColors } from '../../../Constants/COLORS';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import axios from 'axios';
-import { Container } from '../../../Components/Container/Container';
-import InputField from '../../../Components/CustomInput/InputField';
-import metrics from '../../../Constants/Metrics';
-import Animated from 'react-native-reanimated';
-import { Instance } from '../../../Api/Instance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LOGIN } from '../../../Api/Api_End_Points';
-import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
+import { ActivityIndicator, Keyboard, Platform, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import messaging from '@react-native-firebase/messaging';
+import { Instance } from '../../../Api/Instance';
+import { LOGIN } from '../../../Api/Api_End_Points';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Container } from '../../../Components/Container/Container';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { AllColors } from '../../../Constants/COLORS';
 import { styles } from './styles';
-
+import { NavigationProp } from '@react-navigation/native';
+import Animated from 'react-native-reanimated';
+import { Images } from '../../../Assets/Images';
+import InputField from '../../../Components/CustomInput/InputField';
+import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
+import metrics from '../../../Constants/Metrics';
 
 interface LoginDetailsProps {
     route: { params: { Type: string } };
     navigation: NavigationProp<any, any>;
 }
 
-const LoginWithMobile = (props: LoginDetailsProps) => {
+
+const EmailLogin = (props: LoginDetailsProps) => {
+
     const [userEmail, setuserEmail] = useState<string>('');
     const [userPass, setuserPass] = useState<string>('');
     const [fcmToken, setFcmToken] = useState<any>('');
-
-    // console.log("props?.route?.params?.Type: ", props?.route?.params);
 
     const getFCMToken = async () => {
         let token = await messaging().getToken();
@@ -35,11 +33,16 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
         // console.log(token, 'my token');
     };
 
-    const [isEmailSign, setIsEmailSign] = useState<string>(props?.route?.params?.Type);
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [toastMessage, setToastMessage] = useState<string>('');
     const [toastType, setToastType] = useState<'success' | 'error'>('error');
+
+
+
+    useEffect(() => {
+        getFCMToken()
+    }, [])
 
     const handleSignin = async () => {
         if (!userEmail || !userPass) {
@@ -53,7 +56,7 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
             if (response.data.success) {
 
                 const userToken = response.data.token;
-                // console.log("userToken: ", userToken);
+                console.log("userToken: ", userToken);
 
                 await AsyncStorage.setItem('userToken', userToken);
 
@@ -76,9 +79,6 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
     };
 
 
-    useEffect(() => {
-        getFCMToken()
-    }, [])
     return (
         <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
             <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == 'ios' ? 0 : 40} showsVerticalScrollIndicator={false} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
@@ -87,13 +87,16 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
                         <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
 
                         <Text style={styles.phoneText}>Verify With Email</Text>
-                        <Animated.Image style={styles.mailImage} resizeMode="contain" source={isEmailSign == 'Email' ? Images.tick : Images.mobilephone} />
+                        <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.tick} />
 
                         <Text style={styles.phoneSubText}>E-mail</Text>
                         <View style={[styles.InputView, { flexDirection: 'column' }]}>
                             <InputField placeholder="Please enter your email" value={userEmail} onChangeText={setuserEmail} autoCapitalize='none' />
                             <InputField placeholder="Please enter password" secureTextEntry value={userPass} onChangeText={setuserPass} />
                         </View>
+                        <TouchableOpacity onPress={() => props.navigation.navigate("ForgotPassword")}>
+                            <Text style={styles.ForogotTxt}>Forgot Password</Text>
+                        </TouchableOpacity>
 
                         <View style={{ marginHorizontal: 15 }}>
                             <TouchableOpacity onPress={handleSignin} style={[styles.touchView, { marginTop: metrics.hp5 }]} disabled={loading} >
@@ -101,6 +104,7 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => props.navigation.navigate('MobileOTP')} style={[styles.touchView, { backgroundColor: AllColors.primary300 }]}>
+                                {/* <TouchableOpacity onPress={() => props.navigation.navigate('LoginOTP')} style={[styles.touchView, { backgroundColor: AllColors.primary300 }]}> */}
                                 <Text style={[styles.buttonInsideText, { color: AllColors.black }]}>Sign in with Number</Text>
                             </TouchableOpacity>
                         </View>
@@ -112,4 +116,4 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
     )
 }
 
-export default LoginWithMobile
+export default EmailLogin

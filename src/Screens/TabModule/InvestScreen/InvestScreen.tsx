@@ -8,6 +8,7 @@ import { Instance } from '../../../Api/Instance';
 import { useAuthContext } from '../../../context/AuthContext';
 import socketServices from '../../utils/socketServices';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface InvestScreenProps {
   // route: { params: { changeSignInStatus: (flag: boolean) => void } }
@@ -21,11 +22,9 @@ const InvestScreen = (props: InvestScreenProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const categoryId = props?.route?.params?.categoryId
 
-  // console.log("props: ", props?.route?.params?.categoryId);
-
-
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [msgRefresh, setMsgRefresh] = useState<boolean>(false)
+
 
 
   const getAllUsers = async () => {
@@ -35,7 +34,7 @@ const InvestScreen = (props: InvestScreenProps) => {
     }).catch((error: any) => {
       console.error('Error fetching users:', error)
       setLoading(false)
-    })  
+    })
   }
 
   useEffect(() => {

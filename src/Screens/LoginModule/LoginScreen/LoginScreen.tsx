@@ -81,12 +81,16 @@ const LoginScreen = (props: LoginScreenProps) => {
             <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.tick} />
             <Text style={styles.phoneSubText}>{"Select your Login"}</Text>
             <View style={styles.InputView}></View>
-            <TouchableOpacity onPress={() => { SendOTP("Email") }} style={styles.touchView}>
+            {/* <TouchableOpacity onPress={() => { SendOTP("Email") }} style={styles.touchView}> */}
+
+            <TouchableOpacity onPress={() => navigation.navigate("EmailLogin")} style={styles.touchView}>
               <Text style={[styles.buttonInsideText,]}>Login with E-mail</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { SendOTP("OTP") }} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
-              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with Mobile</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate("MobileOTP")} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
+              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
             </TouchableOpacity>
+
             <Text style={styles.DontTxt}>Don't have an Account? <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
           </View>
 

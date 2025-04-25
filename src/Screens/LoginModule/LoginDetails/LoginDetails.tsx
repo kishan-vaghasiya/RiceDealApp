@@ -52,7 +52,6 @@ const LoginDetails = (props: LoginDetailsProps) => {
       const response = await Instance.post(LOGIN.url, { email: userEmail, password: userPass, fcmToken: fcmToken });
 
       if (response.data.success) {
-        console.log("response: ", response?.data);
 
         const userToken = response.data.token;
         console.log("userToken: ", userToken);
@@ -98,8 +97,8 @@ const LoginDetails = (props: LoginDetailsProps) => {
               <InputField placeholder="Please enter your email" value={userEmail} onChangeText={setuserEmail} autoCapitalize='none' />
               <InputField placeholder="Please enter password" secureTextEntry value={userPass} onChangeText={setuserPass} />
             </View>
-            <TouchableOpacity onPress={()=>props.navigation.navigate("ForgotPassword")}>
-             <Text style={styles.ForogotTxt}>Forgot Password</Text>
+            <TouchableOpacity onPress={() => props.navigation.navigate("ForgotPassword")}>
+              <Text style={styles.ForogotTxt}>Forgot Password</Text>
             </TouchableOpacity>
 
             <View style={{ marginHorizontal: 15 }}>

@@ -102,7 +102,6 @@ const EditProfile: React.FC = (props: any) => {
           },
         });
   
-        console.log('API Response:', response.data);
   
         if (response.data.success) {
           Alert.alert('Success', 'Profile updated successfully');

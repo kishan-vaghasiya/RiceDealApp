@@ -11,10 +11,11 @@ import metrics from '../../../Constants/Metrics';
 import Animated from 'react-native-reanimated';
 import { Instance } from '../../../Api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LOGIN } from '../../../Api/Api_End_Points';
+import { LOGIN, LOGIN_MOBILE } from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
 import messaging from '@react-native-firebase/messaging';
 import { styles } from './styles';
+import { useAuthContext } from '../../../context/AuthContext';
 
 
 interface LoginDetailsProps {
@@ -22,10 +23,11 @@ interface LoginDetailsProps {
     navigation: NavigationProp<any, any>;
 }
 
-const LoginWithMobile = (props: LoginDetailsProps) => {
-    const [userEmail, setuserEmail] = useState<string>('');
+const MobileLogin = (props: LoginDetailsProps) => {
+    const [mobile, setMobile] = useState<string>('');
     const [userPass, setuserPass] = useState<string>('');
     const [fcmToken, setFcmToken] = useState<any>('');
+    const { setIsLogin } = useAuthContext()
 
     // console.log("props?.route?.params?.Type: ", props?.route?.params);
 
@@ -42,13 +44,17 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
     const [toastType, setToastType] = useState<'success' | 'error'>('error');
 
     const handleSignin = async () => {
-        if (!userEmail || !userPass) {
-            setErrorMessage("Please enter both email and password");
+        if (mobile.length != 10) {
+            setErrorMessage("Please enter a valid 10 digit mobile number");
+            return;
+        }
+        if (!mobile || !userPass) {
+            setErrorMessage("Please enter both mobile number and password");
             return;
         }
         setLoading(true);
         try {
-            const response = await Instance.post(LOGIN.url, { email: userEmail, password: userPass, fcmToken: fcmToken });
+            const response = await Instance.post(LOGIN_MOBILE.url, { mobile: mobile, password: userPass, fcmToken: fcmToken });
 
             if (response.data.success) {
 
@@ -56,7 +62,7 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
                 // console.log("userToken: ", userToken);
 
                 await AsyncStorage.setItem('userToken', userToken);
-
+                setIsLogin(true)
                 setLoading(false);
                 setToastMessage('Login successful');
                 setToastType('success');
@@ -79,6 +85,8 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
     useEffect(() => {
         getFCMToken()
     }, [])
+
+
     return (
         <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
             <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == 'ios' ? 0 : 40} showsVerticalScrollIndicator={false} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
@@ -86,12 +94,12 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
                     <View>
                         <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
 
-                        <Text style={styles.phoneText}>Verify With Email</Text>
+                        <Text style={styles.phoneText}>Login With Mobile</Text>
                         <Animated.Image style={styles.mailImage} resizeMode="contain" source={isEmailSign == 'Email' ? Images.tick : Images.mobilephone} />
 
-                        <Text style={styles.phoneSubText}>E-mail</Text>
+                        <Text style={styles.phoneSubText}>Mobile</Text>
                         <View style={[styles.InputView, { flexDirection: 'column' }]}>
-                            <InputField placeholder="Please enter your email" value={userEmail} onChangeText={setuserEmail} autoCapitalize='none' />
+                            <InputField placeholder="Please enter your mobile number" value={mobile} keyboardType='number-pad' onChangeText={setMobile} maxLength={10} autoCapitalize='none' />
                             <InputField placeholder="Please enter password" secureTextEntry value={userPass} onChangeText={setuserPass} />
                         </View>
 
@@ -112,4 +120,4 @@ const LoginWithMobile = (props: LoginDetailsProps) => {
     )
 }
 
-export default LoginWithMobile
+export default MobileLogin

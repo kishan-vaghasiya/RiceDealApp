@@ -16,7 +16,7 @@ export default function MobileOTP() {
 
   const [userMobileNumber, setUserMobileNumber] = useState('');
   const [userMobileNumberError, setUserMobileNumberError] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const validateMobileNumber = (number: any) => {
     const regex = /^[0-9]{10}$/;
@@ -37,19 +37,18 @@ export default function MobileOTP() {
     try {
       setLoading(true);
       const response = await Instance.post(`/v1/users/loginWithMobile`, { mobile: userMobileNumber });
-      console.log('response: ', response.data);
-      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: userMobileNumber });
+      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: userMobileNumber, isfirst: response?.data?.isFirst });
     } catch (error: any) {
       console.error('Error:', error);
       setUserMobileNumberError(error?.response?.data?.msg || "Oops, something went wrong.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
     <Container statusBarStyle="dark-content" statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroidextraScrollHeight={Platform.OS === 'ios' ? 0 : 40} showsVerticalScrollIndicator={false} enableAutomaticScrollkeyboardShouldPersistTaps="handled">
+      <KeyboardAwareScrollView style={styles.marginView} showsVerticalScrollIndicator={false} >
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.container}>
             <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />

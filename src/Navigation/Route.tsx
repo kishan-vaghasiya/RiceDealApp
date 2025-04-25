@@ -12,7 +12,6 @@ import InvestScreen from "../Screens/TabModule/InvestScreen/InvestScreen";
 import AINFYScreen from "../Screens/TabModule/AINFYScreen/AINFYScreen";
 import CustomTabBar from "../Components/CustomTabBar/CustomTabBat";
 import HomeScreen from "../Screens/TabModule/HomeScreen/HomeScreen";
-import ProfileScreen from "../Screens/ProfileModule/ProfileScreen/ProfileScreen";
 import EditProfile from "../Screens/ProfileModule/EditProfile/EditProfileScreen";
 import LoginDetails from "../Screens/LoginModule/LoginDetails/LoginDetails";
 import AboutProfileScreen from "../Screens/LoginModule/AboutProfile/AboutProfileScreen";
@@ -29,6 +28,8 @@ import RiseListChat from "../Screens/TabModule/RiseListScreen/RiseListChat";
 import Subscribed from "../Screens/TabModule/ChoosePlan/Subscribed";
 import LoginWithMobile from "../Screens/LoginModule/LoginScreen/LoginWithMobile";
 import ForgotPassword from "../Screens/LoginModule/ForgotPassword/ForgotPassword";
+import EmailLogin from "../Screens/LoginModule/LoginDetails/EmailLogin";
+import ProfileComplete from "../Screens/LoginModule/LoginDetails/ProfileComplete";
 
 const options2 = {
   headerShown: false,
@@ -73,8 +74,10 @@ export default function Route() {
           <StackObj.Screen name="LoginDetails" component={LoginDetails} options={{ headerShown: false }} />
           <StackObj.Screen name={"LoginScreen"} component={LoginScreen} options={options2} />
           <StackObj.Screen name={"LoginWithMobile"} component={LoginWithMobile} options={options2} />
+          <StackObj.Screen name={"EmailLogin"} component={EmailLogin} options={options2} />
+          <StackObj.Screen name={"CompleteProfile"} component={ProfileComplete} options={options2} />
 
-          <StackObj.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
+
           <StackObj.Screen name={"EditProfile"} component={EditProfile} options={options2} />
           <StackObj.Screen name={"ChatScreen"} component={ChatScreen} options={options2} />
           <StackObj.Screen name={"AboutProfileScreen"} component={AboutProfileScreen} options={options2} />

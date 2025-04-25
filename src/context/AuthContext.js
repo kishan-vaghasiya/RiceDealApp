@@ -31,6 +31,8 @@ export const AuthContextProvider = ({ children }) => {
   }, [token]);
 
   // console.log("authUser: ", authUser);
+  // console.log("token: ", token);
+
 
 
   return (

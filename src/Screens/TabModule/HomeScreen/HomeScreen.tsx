@@ -82,7 +82,6 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const getSingleLatestProduct = async () => {
     await Instance.get(`/v1/products/latestProduct`).then((response) => {
-      console.log("response: ", response.data.result)
       setLatestProduct(response.data.result)
     }).catch((error: any) => {
       console.error('Error fetching latest product:', error);
@@ -91,7 +90,6 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const getAdminProduct = async () => {
     await Instance.get(`/v1/products/adminProducts`).then((response) => {
-      console.log("response: ", response.data.result)
       setAdminProduct(response.data.result)
     }).catch((error: any) => {
       console.error('Error fetching latest product:', error);

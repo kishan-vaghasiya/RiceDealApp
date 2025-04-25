@@ -74,7 +74,7 @@ const AINFYScreen = (props: AINFYScreenProps) => {
     try {
       const response = await Instance.get(GET_USER_PROFILE.url, { headers: options });
       const data = response.data;
-      console.log("data: ", data);
+      // console.log("data: ", data);
       setUserProfile(data.result);
       setUserId(data.result._id);
     } catch (error) {
@@ -143,9 +143,6 @@ const AINFYScreen = (props: AINFYScreenProps) => {
     );
   };
 
-  // console.log("userProfile: ", userProfile);
-
-
   return (
     <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
       <View style={styles.header}>
@@ -184,7 +181,7 @@ const AINFYScreen = (props: AINFYScreenProps) => {
           <View style={styles.profileDetails}>
             <View style={styles.profileDetailRow}>
               <Text style={styles.title}>Title: </Text>
-              <Text style={styles.name}>{userProfile?.subscriptionId?.subscriptionId?.name || 'NA'}</Text>
+              <Text style={styles.name}>{userProfile?.subscriptionId?.subscriptionId?.name || 'Free Trial'}</Text>
             </View>
 
             <View style={styles.profileDetailRow}>

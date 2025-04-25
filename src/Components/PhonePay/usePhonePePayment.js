@@ -54,8 +54,6 @@ const usePhonePePayment = () => {
         null,
       );
 
-      console.log('PhonePe SDK Response:', response);
-
       if (response.status === 'SUCCESS') {
         return {
           status: 'SUCCESS',
