@@ -8,8 +8,8 @@ import LoginScreen from "../Screens/LoginModule/LoginScreen/LoginScreen";
 import SplashScreen from "../Screens/LoginModule/SplashScreen/SplashScreen";
 import LoginOTP from "../Screens/LoginModule/OTPScreen/LoginOTP";
 import { BottomTabBarProps, createBottomTabNavigator, } from "@react-navigation/bottom-tabs";
-import InvestScreen from "../Screens/TabModule/InvestScreen/InvestScreen";
-import AINFYScreen from "../Screens/TabModule/AINFYScreen/AINFYScreen";
+import ContactLists from "../Screens/TabModule/InvestScreen/ContactLists";
+import ProfileScreen from "../Screens/TabModule/AINFYScreen/ProfileScreen";
 import CustomTabBar from "../Components/CustomTabBar/CustomTabBat";
 import HomeScreen from "../Screens/TabModule/HomeScreen/HomeScreen";
 import EditProfile from "../Screens/ProfileModule/EditProfile/EditProfileScreen";
@@ -30,6 +30,8 @@ import LoginWithMobile from "../Screens/LoginModule/LoginScreen/LoginWithMobile"
 import ForgotPassword from "../Screens/LoginModule/ForgotPassword/ForgotPassword";
 import EmailLogin from "../Screens/LoginModule/LoginDetails/EmailLogin";
 import ProfileComplete from "../Screens/LoginModule/LoginDetails/ProfileComplete";
+import ChatScreenWithCategory from "../Screens/TabModule/ChatScreen/ChatScreenWithCategory";
+import ConcatctListWithCategory from "../Screens/TabModule/InvestScreen/ConcatctListWithCategory";
 
 const options2 = {
   headerShown: false,
@@ -57,10 +59,9 @@ export default function Route() {
     return (
       /* @ts-ignore */
       <TabObj.Navigator initialRouteName="Home" tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}>
-        <TabObj.Screen name="Chat" component={InvestScreen} options={{ headerShown: false }} />
+        <TabObj.Screen name="Chat" component={ContactLists} options={{ headerShown: false }} />
         <TabObj.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <TabObj.Screen name="Profile" component={AINFYScreen} options={{ headerShown: false }} />
-
+        <TabObj.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       </TabObj.Navigator>
     );
   };
@@ -77,9 +78,11 @@ export default function Route() {
           <StackObj.Screen name={"EmailLogin"} component={EmailLogin} options={options2} />
           <StackObj.Screen name={"CompleteProfile"} component={ProfileComplete} options={options2} />
 
+          <StackObj.Screen name={"ConcatctListWithCategory"} component={ConcatctListWithCategory} options={{ headerShown: false }} />
 
           <StackObj.Screen name={"EditProfile"} component={EditProfile} options={options2} />
           <StackObj.Screen name={"ChatScreen"} component={ChatScreen} options={options2} />
+          <StackObj.Screen name={"ChatScreenWithCategory"} component={ChatScreenWithCategory} options={options2} />
           <StackObj.Screen name={"AboutProfileScreen"} component={AboutProfileScreen} options={options2} />
           <StackObj.Screen name={"AddItem"} component={AddItem} options={options2} />
           <StackObj.Screen name={"LoginOTP"} component={LoginOTP} options={options2} />

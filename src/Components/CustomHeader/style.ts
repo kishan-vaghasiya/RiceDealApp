@@ -59,23 +59,23 @@ export default StyleSheet.create({
     textAlign: "left",
     left: metrics.hp2,
   },
-  
+
   profileBackground: {
-    width: 52,   
-    height: 52, 
-    borderRadius: 52 / 2,  
-    justifyContent: "center", 
-    alignItems: "center",  
+    width: 52,
+    height: 52,
+    borderRadius: 52 / 2,
+    justifyContent: "center",
+    alignItems: "center",
   },
   bacgroundImage: {
-    width: "100%",  
+    width: "100%",
     height: "100%",
-    borderRadius: 52 / 2, 
+    borderRadius: 52 / 2,
   },
   profileImage: {
-    width: 45,   
-    height: 45,  
-    borderRadius: 45 / 2,  
+    width: 45,
+    height: 45,
+    borderRadius: 45 / 2,
   },
 
   investHeaderView: {
@@ -99,7 +99,7 @@ export default StyleSheet.create({
     height: 45,
     borderRadius: metrics.hp2_5,
     alignItems: "center",
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   userFonts: {
     fontFamily: Fonts.AfacadRegular,
@@ -116,7 +116,7 @@ export default StyleSheet.create({
     width: "80%",
     flexDirection: "row",
     alignSelf: "flex-start",
-    
+
     alignItems: "center",
     justifyContent: "flex-start",
   },

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, TouchableOpacity, Text, StyleSheet } from "react-native";
-// import Carousel from "react-native-snap-carousel";
+import Carousel from "react-native-snap-carousel";
 
 /* const data = [
     {
@@ -17,22 +17,22 @@ import { View, Image, TouchableOpacity, Text, StyleSheet } from "react-native";
 
 const DealCarousel = ({ navigation, data }: any) => {
     const renderItem = ({ item }: any) => (
-        <TouchableOpacity onPress={() => navigation.navigate("DealPostList", { dealId: item._id })} style={styles.itemContainer}>
+        <TouchableOpacity /* onPress={() => navigation.navigate("DealPostList", { dealId: item._id })} */ style={styles.itemContainer}>
             <Image source={{ uri: item.image }} style={styles.banner} />
             <Text style={styles.dealName}>{item.name}</Text>
-            <Text style={styles.dealPrice}> RS{item.price}</Text>
+            <Text style={styles.dealPrice}> {item.price}</Text>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
-            {/* <Carousel
+            <Carousel
                 data={data}
                 renderItem={renderItem}
                 sliderWidth={300}
                 itemWidth={250}
                 layout="default"
-            /> */}
+            />
         </View>
     );
 };

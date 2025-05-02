@@ -29,7 +29,7 @@ interface AINFYScreenProps {
   navigation: NavigationProp<any, any>;
 }
 
-const AINFYScreen = (props: AINFYScreenProps) => {
+const ProfileScreen = (props: AINFYScreenProps) => {
   const navigation = useNavigation();
   const { options } = useAuthContext()
 
@@ -216,4 +216,4 @@ const AINFYScreen = (props: AINFYScreenProps) => {
   );
 };
 
-export default AINFYScreen;
+export default ProfileScreen;

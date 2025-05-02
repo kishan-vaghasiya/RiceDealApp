@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GET_TRADES, REGISTER } from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
 import { CommonActions } from '@react-navigation/native';
+import CheckBox from '@react-native-community/checkbox';
 
 interface Errors {
     name?: string;
@@ -259,7 +260,6 @@ const ProfileComplete: React.FC = (props: any) => {
                                 placeholder="Select your Trade Name"
                                 containerStyle={{ marginVertical: metrics.hp1 }}
                                 onChangeValue={(selectedValue) => {
-                                    // console.log("Selected Trade ID: ", selectedValue);
                                     const selectedTrade = tradeItems.find(item => item.value === selectedValue);
                                     if (selectedTrade) {
                                         // console.log("Selected Trade: ", selectedTrade);
@@ -286,7 +286,12 @@ const ProfileComplete: React.FC = (props: any) => {
                         <InputField label="Country" placeholder="Enter your Country" value={country} onChangeText={handleCountryChange} keyboardType="default" error={errors.state} />
                         <InputField label="Password" placeholder="Enter your Password" value={password} onChangeText={handlePasswordChange} secureTextEntry={true} error={errors.password} />
 
-                        <Text>Terms and Condition</Text>
+                        <CheckBox
+                            value={term}
+                            onValueChange={setTerm}
+                            tintColors={{ true: '#007AFF', false: '#999' }}
+                        />
+                        <Text style={{ color: 'black' }}>I agree to the Terms & Conditions</Text>
 
                         <TouchableOpacity onPress={handleSave} style={styles.saveButton} disabled={loading}>
                             {loading ? (<ActivityIndicator size="small" color={AllColors.white} />) : (<Text style={styles.saveButtonText}>Save</Text>)}

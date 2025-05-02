@@ -1,26 +1,12 @@
 import { NavigationProp } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import {
-  Animated,
-  FlatList,
-  Image,
-  ImageBackground,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  ActivityIndicator
-} from 'react-native';
-import { Images } from '../../../Assets/Images';
+import { Animated, FlatList, Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
 import { styles } from './styles';
 import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
 import metrics from '../../../Constants/Metrics';
-import { ExpandingDot } from 'react-native-animated-pagination-dots';
 import { useNavigation } from '@react-navigation/native';
 import { Container } from '../../../Components/Container/Container';
 import { AllColors } from '../../../Constants/COLORS';
-import axios from 'axios';
 import { Instance } from '../../../Api/Instance';
 import { GET_TRADES } from '../../../Api/Api_End_Points';
 import socketServices from '../../utils/socketServices';
@@ -28,47 +14,8 @@ import { useAuthContext } from '../../../context/AuthContext';
 import DealCarousel from '../../Components/DealCarousel';
 
 interface HomeScreenProps {
-  // route: { params: { changeSignInStatus: (flag: boolean) => void } }
   navigation: NavigationProp<any, any>;
 }
-
-const products = [
-  {
-    id: '1',
-    name: 'V R M apple (53 par kg)',
-    code: '7019536026',
-    image:
-      'https://e7.pngegg.com/pngimages/345/524/png-clipart-cooked-rice-basmati-grocery-store-gunny-sack-rice-bags-food-supermarket.png',
-  },
-  {
-    id: '2',
-    name: 'V R M apple (53 par kg)',
-    code: '7019536026',
-    image:
-      'https://e7.pngegg.com/pngimages/345/524/png-clipart-cooked-rice-basmati-grocery-store-gunny-sack-rice-bags-food-supermarket.png',
-  },
-  {
-    id: '3',
-    name: 'V R M apple (53 par kg)',
-    code: '7019536026',
-    image:
-      'https://e7.pngegg.com/pngimages/345/524/png-clipart-cooked-rice-basmati-grocery-store-gunny-sack-rice-bags-food-supermarket.png',
-  },
-  {
-    id: '4',
-    name: 'V R M apple (53 par kg)',
-    code: '7019536426',
-    image:
-      'https://e7.pngegg.com/pngimages/345/524/png-clipart-cooked-rice-basmati-grocery-store-gunny-sack-rice-bags-food-supermarket.png',
-  },
-  {
-    id: '5',
-    name: 'V R M apple (53 par kg)',
-    code: '7079536026',
-    image:
-      'https://e7.pngegg.com/pngimages/345/524/png-clipart-cooked-rice-basmati-grocery-store-gunny-sack-rice-bags-food-supermarket.png',
-  },
-];
 
 
 const HomeScreen = (props: HomeScreenProps) => {
@@ -79,12 +26,26 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const [latestProduct, setLatestProduct] = useState<any[]>([]);
   const [adminProduct, setAdminProduct] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any>([])
+
+  const [search, setSearch] = useState('');
+  const [filteredCategories, setFilteredCategories] = useState<any>([]);
 
   const getSingleLatestProduct = async () => {
     await Instance.get(`/v1/products/latestProduct`).then((response) => {
       setLatestProduct(response.data.result)
     }).catch((error: any) => {
       console.error('Error fetching latest product:', error);
+    })
+  }
+
+  const getBanner = async () => {
+    await Instance.get(`/v1/banners/getAll`).then((response) => {
+      setBanners(response?.data?.result)
+      console.log("response: ", response?.data);
+
+    }).catch((error) => {
+      console.log("error: ", error);
     })
   }
 
@@ -99,11 +60,13 @@ const HomeScreen = (props: HomeScreenProps) => {
   useEffect(() => {
     getSingleLatestProduct()
     getAdminProduct()
+    getBanner()
     const fetchCategories = async () => {
       try {
         const response = await Instance.get(GET_TRADES.url);
         if (response.data.success) {
           setCategoriess(response.data.result);
+          setFilteredCategories(response.data.result);
         } else {
           console.error('Failed to fetch categories', response.data.msg);
         }
@@ -115,6 +78,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     };
     fetchCategories();
   }, []);
+
 
   useEffect(() => {
     socketServices.initialzeSocket(authUser?._id)
@@ -137,7 +101,7 @@ const HomeScreen = (props: HomeScreenProps) => {
   );
 
   const renderCategory = ({ item }: any) => (
-    <TouchableOpacity style={styles.categoryCard} onPress={() => props.navigation.navigate('Chat', { categoryId: item._id })}>
+    <TouchableOpacity style={styles.categoryCard} onPress={() => props.navigation.navigate('ConcatctListWithCategory', { categoryId: item._id })}>
       {/* <TouchableOpacity style={styles.categoryCard} onPress={() => props.navigation.navigate('RiseListScreen', { categoryId: item._id })}> */}
       <Image source={{ uri: item?.image }} style={styles.categoryImage} />
       <Text style={styles.categoryText}>{item?.name}</Text>
@@ -147,14 +111,21 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   // console.log("latestProduct:", latestProduct);
 
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    const filtered = categoriess.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
+    setFilteredCategories(filtered);
+  };
+
+
   return (
 
-    <Container
-      statusBarStyle={'dark-content'}
-      statusBarBackgroundColor={AllColors.white}
-      backgroundColor={AllColors.white}>
+    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
+
       <CustomHeader type="invest" screenName="Home" onPressProfilePic={() => { props.navigation.navigate('EditProfile'); }} />
+
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} style={{ marginBottom: metrics.hp10 }}>
+
         {/* Product Carousel */}
         <FlatList
           data={adminProduct}
@@ -175,11 +146,13 @@ const HomeScreen = (props: HomeScreenProps) => {
         />
 
         <TouchableOpacity onPress={() => props.navigation.navigate('DealPostList')}>
-          {/* <Image source={Images.Deal} style={styles.banner} /> */}
           <Image source={{ uri: latestProduct[0]?.image }} style={styles.banner} />
         </TouchableOpacity>
-        {/* <DealCarousel navigation={props.navigation} data={latestProduct} /> */}
+        <DealCarousel navigation={props.navigation} data={banners} />
 
+        <View style={{ width: '95%', marginHorizontal: '2.5%' }}>
+          <TextInput value={search} onChangeText={handleSearch} placeholder="Search category..." style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 10, marginBottom: 5, marginTop: 10 }} />
+        </View>
         <Text style={styles.sectionTitle}>Categories</Text>
         {loading ? (
           <View style={styles.loaderContainer}>
@@ -187,7 +160,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           </View>
         ) : (
           <FlatList
-            data={categoriess}
+            data={filteredCategories}
             numColumns={2}
             renderItem={renderCategory}
             keyExtractor={(item) => item._id}

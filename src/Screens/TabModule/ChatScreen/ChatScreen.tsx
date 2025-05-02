@@ -86,7 +86,7 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
     }
   }, [userId]);
 
-  
+
   const handleSendMessage = async () => {
     if (inputText.trim()) {
       const newMessage = { sender: authUser._id, receiver: userId, message: inputText };
