@@ -72,4 +72,36 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
+  modalOverlay: {
+    position: 'absolute',
+    bottom: 90,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
+    height: '100%'
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    maxHeight: '80%'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    marginRight: 10,
+    width: '50%'
+  },
+  filterButton: {
+    backgroundColor: '#007AFF',
+    padding: 5,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10
+  }
+
 });

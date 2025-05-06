@@ -36,51 +36,26 @@ export type props = {
   onPresRefer?: ((event: GestureResponderEvent) => void) | undefined;
   onPressSearchIcon?: ((event: GestureResponderEvent) => void) | undefined;
   onPressNotificationIcon?:
-    | ((event: GestureResponderEvent) => void)
-    | undefined;
+  | ((event: GestureResponderEvent) => void)
+  | undefined;
   onPressPlus?: ((event: GestureResponderEvent) => void) | undefined;
 };
 
-export const CustomHeader: React.FC<props> = ({
-  showSearch,
-  type,
-  screenName,
-  showNotification,
-  showbackIcon,
-  onPressdotsMenu,
-  onPressBack,
-  userName,
-  profilePicUrl,
-  onPressProfilePic,
-  onPressSearchIcon,
-  onPressNotificationIcon,
-  customImage,
-}) => {
+export const CustomHeader: React.FC<props> = ({ showSearch, type, screenName, showNotification, showbackIcon, onPressdotsMenu, onPressBack, userName, profilePicUrl, onPressProfilePic, onPressSearchIcon, onPressNotificationIcon, customImage, }) => {
   return (
     <View style={[style.container, { zIndex: 10 }]}>
       {type === "invest" ? (
         <View style={style.investHeaderView}>
-          <View style={style.searchMainView}>
-          {screenName && <Text style={style.screenText}>{screenName}</Text>}
-          </View>
+          <View style={style.searchMainView}>{screenName && <Text style={style.screenText}>{screenName}</Text>}</View>
           <View style={style.investSubHeader}>
             <TouchableOpacity onPress={onPressProfilePic}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <ImageBackground
-             source={Images.roundBackgorundBlur}
-             style={style.profileBackground}
-             imageStyle={style.bacgroundImage} 
-             resizeMode="cover"  
-             >
-             <Image
-             source={Images.Logo}
-             resizeMode="contain"
-             style={style.profileImage}  
-             />
-             </ImageBackground>
-           </View>
-           </TouchableOpacity> 
-          
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <ImageBackground source={Images.roundBackgorundBlur} style={style.profileBackground} imageStyle={style.bacgroundImage} resizeMode="cover"                >
+                  <Image source={Images.Logo} resizeMode="contain" style={style.profileImage} />
+                </ImageBackground>
+              </View>
+            </TouchableOpacity>
+
           </View>
         </View>
       ) : type === "back" ? (
@@ -89,44 +64,20 @@ export const CustomHeader: React.FC<props> = ({
             <View style={style.viewRow}>
               {!showbackIcon && (
                 <TouchableOpacity style={style.touchBack} onPress={onPressBack}>
-                  <Image
-                    source={Images.BackButton}
-                    style={{ height: metrics.hp4, width: metrics.hp4 }}
-                  />
+                  <Image source={Images.BackButton} style={{ height: metrics.hp4, width: metrics.hp4 }} />
                 </TouchableOpacity>
               )}
               {screenName && (
-                <Text
-                  style={[
-                    style.screenText,
-                    { left: showSearch ? metrics.hp3_5 : metrics.hp2 },
-                  ]}
-                >
-                  {screenName}
-                </Text>
+                <Text style={[style.screenText, { left: showSearch ? metrics.hp3_5 : metrics.hp2 },]}>{screenName}</Text>
               )}
             </View>
             {showSearch && (
-              <Image
-                source={customImage}
-                style={{
-                  height: metrics.hp4,
-                  width: metrics.hp4,
-                  alignSelf: "center",
-                  marginRight: 5,
-                }}
-              />
+              <Image source={customImage} style={{ height: metrics.hp4, width: metrics.hp4, alignSelf: "center", marginRight: 5, }} />
             )}
 
             {showNotification && (
-              <TouchableOpacity
-                style={[style.touchDots, { marginRight: metrics.hp2 }]}
-                onPress={onPressdotsMenu}
-              >
-                <Image
-                  source={Images.notificationIcon}
-                  style={{ height: metrics.hp3, width: metrics.hp3 }}
-                />
+              <TouchableOpacity style={[style.touchDots, { marginRight: metrics.hp2 }]} onPress={onPressdotsMenu}>
+                <Image source={Images.notificationIcon} style={{ height: metrics.hp3, width: metrics.hp3 }} />
               </TouchableOpacity>
             )}
           </View>
@@ -136,10 +87,7 @@ export const CustomHeader: React.FC<props> = ({
           <View style={style.backWithMenu}>
             <View style={style.viewRow}>
               <TouchableOpacity style={style.touchBack} onPress={onPressBack}>
-                <Image
-                  source={Images.arrowLeft}
-                  style={{ height: metrics.hp3, width: metrics.hp3 }}
-                />
+                <Image source={Images.arrowLeft} style={{ height: metrics.hp3, width: metrics.hp3 }} />
               </TouchableOpacity>
               {screenName && <Text style={style.screenText}>{screenName}</Text>}
             </View>
