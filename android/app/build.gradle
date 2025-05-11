@@ -78,9 +78,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.DealforRice"
+    namespace "com.riceapp.riceapp"
     defaultConfig {
-        applicationId "com.DealforRice"
+        applicationId "com.riceapp.riceapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 10

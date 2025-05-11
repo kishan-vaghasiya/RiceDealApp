@@ -1,5 +1,5 @@
-package com.DealforRice
-import com.DealforRice.BuildConfig
+package com.riceapp.riceapp
+import com.riceapp.riceapp.BuildConfig
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
