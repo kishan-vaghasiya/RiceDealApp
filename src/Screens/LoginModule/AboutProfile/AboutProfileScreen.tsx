@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,23 +10,23 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { Images } from '../../../Assets/Images';
+import {Images} from '../../../Assets/Images';
 import InputField from '../../../Components/CustomInput/InputField';
-import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
+import {CustomHeader} from '../../../Components/CustomHeader/CutsomHeader';
 import metrics from '../../../Constants/Metrics';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { AllColors } from '../../../Constants/COLORS';
-import { styles } from './style';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {AllColors} from '../../../Constants/COLORS';
+import {styles} from './style';
+import {launchImageLibrary} from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Fonts } from '../../../Constants/Fonts';
-import { Container } from '../../../Components/Container/Container';
-import { Instance } from '../../../Api/Instance';
+import {Fonts} from '../../../Constants/Fonts';
+import {Container} from '../../../Components/Container/Container';
+import {Instance} from '../../../Api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GET_TRADES, REGISTER } from '../../../Api/Api_End_Points';
+import {GET_TRADES, REGISTER} from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
 
 interface Errors {
@@ -36,7 +36,7 @@ interface Errors {
   trade?: string;
   city?: string;
   state?: string;
-  password?: string
+  password?: string;
 }
 
 const AboutProfileScreen: React.FC = (props: any) => {
@@ -71,7 +71,10 @@ const AboutProfileScreen: React.FC = (props: any) => {
       }
     } catch (error) {
       console.error('Error fetching trade data:', error);
-      Alert.alert('Error', 'Something went wrong while fetching the trade data');
+      Alert.alert(
+        'Error',
+        'Something went wrong while fetching the trade data',
+      );
     }
   };
 
@@ -82,45 +85,45 @@ const AboutProfileScreen: React.FC = (props: any) => {
   const handleNameChange = (text: string) => {
     setName(text);
     if (text.trim()) {
-      setErrors(prev => ({ ...prev, name: undefined }));
+      setErrors(prev => ({...prev, name: undefined}));
     }
   };
   const handleCityChange = (text: string) => {
     setCity(text);
     if (text.trim()) {
-      setErrors(prev => ({ ...prev, city: undefined }));
+      setErrors(prev => ({...prev, city: undefined}));
     }
   };
   const handleStateChange = (text: string) => {
     setState(text);
     if (text.trim()) {
-      setErrors(prev => ({ ...prev, state: undefined }));
+      setErrors(prev => ({...prev, state: undefined}));
     }
   };
   const handleTradeNameChange = (text: string) => {
     setTradeName(text);
     if (text.trim()) {
-      setErrors(prev => ({ ...prev, trade: undefined }));
+      setErrors(prev => ({...prev, trade: undefined}));
     }
   };
 
   const handleMobileChange = (text: string) => {
     setMobileNumber(text);
     if (/^\d{10}$/.test(text)) {
-      setErrors(prev => ({ ...prev, mobileNumber: undefined }));
+      setErrors(prev => ({...prev, mobileNumber: undefined}));
     }
   };
 
   const handleEmailChange = (text: string) => {
     setEmail(text);
     if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(text)) {
-      setErrors(prev => ({ ...prev, email: undefined }));
+      setErrors(prev => ({...prev, email: undefined}));
     }
   };
   const handlePasswordChange = (text: string) => {
     setPassword(text);
     if (text.trim()) {
-      setErrors(prev => ({ ...prev, password: undefined }));
+      setErrors(prev => ({...prev, password: undefined}));
     }
   };
 
@@ -140,7 +143,8 @@ const AboutProfileScreen: React.FC = (props: any) => {
       newErrors.email = 'Invalid email address';
     }
     if (!password.trim()) newErrors.password = 'Password is required';
-    else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters long';
+    else if (password.length < 6)
+      newErrors.password = 'Password must be at least 6 characters long';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -159,9 +163,15 @@ const AboutProfileScreen: React.FC = (props: any) => {
         formData.append('state', state);
         formData.append('trade', tradeName);
 
-        formData.append('image', { uri: profilePic ? profilePic : defaultProfilePic, type: 'image/jpeg', name: 'profilePic.jpg', });
+        formData.append('image', {
+          uri: profilePic ? profilePic : defaultProfilePic,
+          type: 'image/jpeg',
+          name: 'profilePic.jpg',
+        });
 
-        const response = await Instance.post(REGISTER.url, formData, { headers: { 'Content-Type': 'multipart/form-data', }, });
+        const response = await Instance.post(REGISTER.url, formData, {
+          headers: {'Content-Type': 'multipart/form-data'},
+        });
 
         if (response.data.success) {
           console.log('User registered successfully:', response.data);
@@ -184,7 +194,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
   };
 
   const handleImagePick = () => {
-    launchImageLibrary({ mediaType: 'photo', includeBase64: false }, response => {
+    launchImageLibrary({mediaType: 'photo', includeBase64: false}, response => {
       if (response.assets && response.assets.length > 0) {
         const selectedImage = response.assets[0].uri;
         setProfilePic(selectedImage);
@@ -194,28 +204,77 @@ const AboutProfileScreen: React.FC = (props: any) => {
     });
   };
 
-  const defaultProfilePic = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s';
-  const imageSource = profilePic ? { uri: profilePic } : { uri: defaultProfilePic };
+  const defaultProfilePic =
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s';
+  const imageSource = profilePic ? {uri: profilePic} : {uri: defaultProfilePic};
   return (
-    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-      <CustomHeader type="back" screenName="About Profile" onPressBack={() => { props.navigation.goBack(); }} />
-      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == 'ios' ? 0 : 40} enableAutomaticScroll={true} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+    <Container
+      statusBarStyle={'dark-content'}
+      statusBarBackgroundColor={AllColors.white}
+      backgroundColor={AllColors.white}>
+      <CustomHeader
+        type="back"
+        screenName="About Profile"
+        onPressBack={() => {
+          props.navigation.goBack();
+        }}
+      />
+      <KeyboardAwareScrollView
+        style={styles.marginView}
+        enableOnAndroid={true}
+        extraScrollHeight={Platform.OS == 'ios' ? 0 : 40}
+        enableAutomaticScroll={true}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+          }}>
           <View>
             <View style={styles.avatarContainer}>
               <Animated.View>
-                <Image style={{ width: 90, height: 90, borderRadius: 45 }} source={imageSource} />
+                <Image
+                  style={{width: 90, height: 90, borderRadius: 45}}
+                  source={imageSource}
+                />
               </Animated.View>
-              <TouchableOpacity style={styles.editPhotoButton} onPress={handleImagePick}>
-                <Image style={{ width: metrics.hp14, height: metrics.hp7 }} resizeMode="contain" source={Images.editFrame} />
+              <TouchableOpacity
+                style={styles.editPhotoButton}
+                onPress={handleImagePick}>
+                <Image
+                  style={{width: metrics.hp14, height: metrics.hp7}}
+                  resizeMode="contain"
+                  source={Images.editFrame}
+                />
               </TouchableOpacity>
             </View>
 
-            <InputField label="User Name" placeholder="Enter your Name" value={name} onChangeText={handleNameChange} error={errors.name} />
-            <InputField label="Email Address" placeholder="Enter your Email Address" value={email} onChangeText={handleEmailChange} keyboardType="email-address" error={errors.email} />
-            <InputField label="Mobile Number" placeholder="Enter your Mobile Number" value={mobileNumber} onChangeText={handleMobileChange} keyboardType="phone-pad" error={errors.mobileNumber} maxLength={10} />
+            <InputField
+              label="User Name"
+              placeholder="Enter your Name"
+              value={name}
+              onChangeText={handleNameChange}
+              error={errors.name}
+            />
+            <InputField
+              label="Email Address"
+              placeholder="Enter your Email Address"
+              value={email}
+              onChangeText={handleEmailChange}
+              keyboardType="email-address"
+              error={errors.email}
+            />
+            <InputField
+              label="Mobile Number"
+              placeholder="Enter your Mobile Number"
+              value={mobileNumber}
+              onChangeText={handleMobileChange}
+              keyboardType="phone-pad"
+              error={errors.mobileNumber}
+              maxLength={10}
+            />
             <Text style={styles.Tradetitile}>Trade Name</Text>
-            <View style={{ marginHorizontal: 15 }}>
+            <View style={{marginHorizontal: 15}}>
               <DropDownPicker
                 open={tradeOpen}
                 value={tradeName}
@@ -224,23 +283,67 @@ const AboutProfileScreen: React.FC = (props: any) => {
                 etValue={setTradeName}
                 setItems={setTradeItems}
                 placeholder="Select your Trade Name"
-                containerStyle={{ marginVertical: metrics.hp1 }}
-                onChangeValue={(selectedValue) => {
-                  console.log("Selected Trade ID: ", selectedValue);
-                  const selectedTrade = tradeItems.find(item => item.value === selectedValue); if (selectedTrade) { console.log("Selected Trade: ", selectedTrade); }
+                containerStyle={{marginVertical: metrics.hp1}}
+                onChangeValue={selectedValue => {
+                  console.log('Selected Trade ID: ', selectedValue);
+                  const selectedTrade = tradeItems.find(
+                    item => item.value === selectedValue,
+                  );
+                  if (selectedTrade) {
+                    console.log('Selected Trade: ', selectedTrade);
+                  }
                 }}
-                style={{ backgroundColor: AllColors.lightGray, borderColor: AllColors.lightGray, marginHorizontal: metrics.hp1, alignSelf: 'center', }}
-                dropDownContainerStyle={{ backgroundColor: AllColors.lightGray, borderWidth: 0, }}
-                placeholderStyle={{ color: 'grey', fontSize: 17, fontFamily: Fonts.AfacadRegular, }}
+                style={{
+                  backgroundColor: AllColors.lightGray,
+                  borderColor: AllColors.lightGray,
+                  marginHorizontal: metrics.hp1,
+                  alignSelf: 'center',
+                }}
+                dropDownContainerStyle={{
+                  backgroundColor: AllColors.lightGray,
+                  borderWidth: 0,
+                }}
+                placeholderStyle={{
+                  color: 'grey',
+                  fontSize: 17,
+                  fontFamily: Fonts.AfacadRegular,
+                }}
               />
             </View>
 
-
-            <InputField label="City" placeholder="Enter your City" value={city} onChangeText={handleCityChange} keyboardType="default" error={errors.city} />
-            <InputField label="State" placeholder="Enter your State" value={state} onChangeText={handleStateChange} keyboardType="default" error={errors.state} />
-            <InputField label="Password" placeholder="Enter your Password" value={password} onChangeText={handlePasswordChange} secureTextEntry={true} error={errors.password} />
-            <TouchableOpacity onPress={handleSave} style={styles.saveButton} disabled={loading}>
-              {loading ? (<ActivityIndicator size="small" color={AllColors.white} />) : (<Text style={styles.saveButtonText}>Save</Text>)}
+            <InputField
+              label="City"
+              placeholder="Enter your City"
+              value={city}
+              onChangeText={handleCityChange}
+              keyboardType="default"
+              error={errors.city}
+            />
+            <InputField
+              label="State"
+              placeholder="Enter your State"
+              value={state}
+              onChangeText={handleStateChange}
+              keyboardType="default"
+              error={errors.state}
+            />
+            <InputField
+              label="Password"
+              placeholder="Enter your Password"
+              value={password}
+              onChangeText={handlePasswordChange}
+              secureTextEntry={true}
+              error={errors.password}
+            />
+            <TouchableOpacity
+              onPress={handleSave}
+              style={styles.saveButton}
+              disabled={loading}>
+              {loading ? (
+                <ActivityIndicator size="small" color={AllColors.white} />
+              ) : (
+                <Text style={styles.saveButtonText}>Save</Text>
+              )}
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>

@@ -10,6 +10,8 @@ import Animated from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { Instance } from '../../../Api/Instance';
 import CountryPicker from 'react-native-country-picker-modal';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 export default function MobileOTP() {
 
@@ -51,11 +53,6 @@ export default function MobileOTP() {
       setLoading(false);
     }
   };
-
-  // console.log("userMobileNumber", userMobileNumber);
-  // console.log("callingCode", callingCode);
-  // console.log("showCountryPicker", showCountryPicker);
-  // console.log("countryCode", countryCode);
 
 
 
@@ -126,106 +123,93 @@ export default function MobileOTP() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: metrics.hp2,
+    paddingHorizontal: width   * 0.05,
+    paddingTop: height * 0.05,
   },
   logoImage: {
     width: '100%',
-    height: metrics.hp30,
-    // marginTop: Platform.OS === 'android' ? metrics.hp9 : metrics.hp3,
-    marginTop: 10,
+    height: height * 0.25,
+    marginBottom: height * 0.02,
   },
   mailImage: {
     width: '30%',
-    height: metrics.hp9,
-    marginTop: Platform.OS === 'android' ? metrics.hp3 : metrics.hp3,
+    height: height * 0.1,
+    marginTop: height * 0.02,
   },
   phoneText: {
     fontFamily: Fonts.AfacadBold,
-    fontSize: 30,
+    fontSize: 28,
     color: AllColors.black,
-    marginTop: metrics.hp5,
-    lineHeight: 35,
+    marginTop: height * 0.02,
+    lineHeight: 34,
     textAlign: 'center',
   },
   phoneSubText: {
     fontFamily: Fonts.AfacadSemibold,
-    fontWeight: 'semibold',
-    fontSize: 22,
+    fontSize: 20,
     color: AllColors.black,
-    marginTop: metrics.hp1,
-  },
-  inputContainer: {
-    marginTop: metrics.hp2,
+    marginTop: height * 0.01,
+    marginBottom: height * 0.01,
   },
   InputView: {
     flexDirection: 'row',
-    marginTop: metrics.hp2,
-  },
-  countryCode: {
-    height: metrics.hp6,
-    width: '18%',
-    backgroundColor: AllColors.lightGray,
-    borderRadius: metrics.hp1,
-    textAlign: 'center',
-    alignSelf: 'center',
-    fontWeight: 'semibold',
-    justifyContent: 'center',
-    color: AllColors.black,
-    paddingVertical: 17,
-    fontFamily: Fonts.AfacadMedium,
+    marginTop: height * 0.015,
+    alignItems: 'center',
+    width: '100%',
   },
   textInputView: {
-    height: metrics.hp6,
-    width: '80%',
+    flex: 1,
+    height: 55,
     backgroundColor: AllColors.lightGray,
-    borderRadius: metrics.hp1,
-    paddingLeft: 11,
-    fontSize: 17,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontSize: 16,
     color: AllColors.black,
     fontFamily: Fonts.AfacadBold,
-    left: 5
-  },
-  errorText: {
-    color: AllColors.red,
-    fontSize: 10,
-    fontFamily: Fonts.AfacadSemibold,
-    marginTop: 5,
-  },
-  touchView: {
-    width: '100%',
-    marginHorizontal: metrics.hp2,
-    height: metrics.hp7,
-    backgroundColor: AllColors.midGreen,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: metrics.hp2,
-    borderRadius: metrics.hp2,
-  },
-  primaryButton: {
-    backgroundColor: AllColors.primary300,
-  },
-  buttonInsideText: {
-    fontSize: 20,
-    fontFamily: Fonts.AfacadMedium,
-    color: AllColors.white,
-  },
-  primaryButtonText: {
-    color: AllColors.black,
-  },
-  marginView: {
-    marginBottom: Platform.OS === 'android' ? 0 : 150,
   },
   countryPicker: {
-    paddingHorizontal: 10,
+    backgroundColor: AllColors.lightGray,
+    paddingVertical: 15,
+    paddingHorizontal: 12,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 5,
+    marginRight: 8,
   },
   countryCodeText: {
     fontSize: 16,
     fontFamily: Fonts.AfacadBold,
     color: AllColors.black,
+  },
+  errorText: {
+    color: AllColors.red,
+    fontSize: 12,
+    fontFamily: Fonts.AfacadSemibold,
+    marginTop: 5,
+    alignSelf: 'flex-start',
+  },
+  touchView: {
+    width: '100%',
+    height: 55,
+    backgroundColor: AllColors.midGreen,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    marginTop: height * 0.06,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonInsideText: {
+    fontSize: 18,
+    fontFamily: Fonts.AfacadMedium,
+    color: AllColors.white,
+  },
+  marginView: {
+    flex: 1,
+    backgroundColor: AllColors.white,
   }
 });
