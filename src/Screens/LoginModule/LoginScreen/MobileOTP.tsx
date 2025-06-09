@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: width   * 0.05,
+    paddingHorizontal: width/1.4,
     paddingTop: height * 0.05,
   },
   logoImage: {
