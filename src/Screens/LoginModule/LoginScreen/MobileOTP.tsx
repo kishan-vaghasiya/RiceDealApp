@@ -43,7 +43,7 @@ export default function MobileOTP() {
     try {
       setLoading(true);
       const response = await Instance.post(`/v1/users/loginWithMobile`, { mobile: `+${callingCode}${userMobileNumber}`, countryShortName: countryCode, countryCode: callingCode });
-      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: userMobileNumber, isfirst: response?.data?.isFirst });
+      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: `+${callingCode}${userMobileNumber}`, isfirst: response?.data?.isFirst });
     } catch (error: any) {
       console.error('Error:', error);
       setUserMobileNumberError(error?.response?.data?.msg || "Oops, something went wrong.");
@@ -98,7 +98,6 @@ export default function MobileOTP() {
                 value={userMobileNumber}
                 placeholder="000 000 0000"
                 placeholderTextColor={AllColors.black}
-              // maxLength={10}
               />
             </View>
             {userMobileNumberError ? (
