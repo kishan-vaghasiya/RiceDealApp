@@ -1,32 +1,37 @@
+// (All your existing imports remain unchanged)
 import React, { useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, StyleSheet, Platform, Keyboard, ActivityIndicator } from 'react-native';
+import {
+  Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback,
+  View, StyleSheet, Platform, Keyboard, ActivityIndicator, Modal, FlatList
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Container } from '../../../Components/Container/Container';
 import { AllColors } from '../../../Constants/COLORS';
 import { Images } from '../../../Assets/Images';
-import metrics from '../../../Constants/Metrics';
+import { Dimensions } from 'react-native';
 import { Fonts } from '../../../Constants/Fonts';
 import Animated from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { Instance } from '../../../Api/Instance';
-import CountryPicker from 'react-native-country-picker-modal';
-import { Dimensions } from 'react-native';
+import countryData from './countryData.json'; // Your JSON file
+
 const { width, height } = Dimensions.get('window');
 
 export default function MobileOTP() {
-
   const navigation = useNavigation<any>();
-
-  const [countryCode, setCountryCode] = useState("IN"); // Default to India
-  const [callingCode, setCallingCode] = useState('91');
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
 
   const [userMobileNumber, setUserMobileNumber] = useState('');
   const [userMobileNumberError, setUserMobileNumberError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState({ name: 'India', dial_code: '+91', code: 'IN' });
+  const [search, setSearch] = useState('');
+
+  const filteredData = countryData.filter(country =>
+    country.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   const validateMobileNumber = (number: string) => {
-    // Allow only numeric input
     const regex = /^[0-9]*$/;
     if (!regex.test(number)) {
       setUserMobileNumberError('Mobile number must contain only digits.');
@@ -41,11 +46,26 @@ export default function MobileOTP() {
       setUserMobileNumberError('Please enter a valid mobile number');
       return;
     }
-
+    //{ mobile: `+${callingCode}${userMobileNumber}`, countryShortName: countryCode, countryCode: callingCode }
+    //{ sessionId: response?.data?.result?.Details, mobile: `+${callingCode}${userMobileNumber}`, isfirst: response?.data?.isFirst }
     try {
       setLoading(true);
-      const response = await Instance.post(`/v1/users/loginWithMobile`, { mobile: `+${callingCode}${userMobileNumber}`, countryShortName: countryCode, countryCode: callingCode });
-      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: `+${callingCode}${userMobileNumber}`, isfirst: response?.data?.isFirst });
+
+      const mobile = `${selectedCountry.dial_code}${userMobileNumber}`;
+      const response = await Instance.post(`/v1/users/loginWithMobile`, { mobile: `+${selectedCountry.dial_code.replace('+', '')}${userMobileNumber}`, countryShortName: selectedCountry.code, countryCode: selectedCountry.dial_code.replace('+', '') });
+      /* const response = await Instance.post(`/v1/users/loginWithMobile`, {
+        mobile,
+        countryShortName: selectedCountry.code,
+        countryCode: selectedCountry.dial_code.replace('+', '')
+      }); */
+
+      navigation.navigate('LoginOTP', { sessionId: response?.data?.result?.Details, mobile: `+${selectedCountry.dial_code.replace('+', '')}${userMobileNumber}`, isfirst: response?.data?.isFirst });
+      /*  navigation.navigate('LoginOTP', {
+         sessionId: response?.data?.result?.Details,
+         mobile,
+         isfirst: response?.data?.isFirst
+       }); */
+
     } catch (error: any) {
       console.error('Error:', error);
       setUserMobileNumberError(error?.response?.data?.msg || "Oops, something went wrong.");
@@ -54,11 +74,14 @@ export default function MobileOTP() {
     }
   };
 
-
+  const handleSelect = (country) => {
+    setSelectedCountry(country);
+    setModalVisible(false);
+  };
 
   return (
     <Container statusBarStyle="dark-content" statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-      <KeyboardAwareScrollView style={styles.marginView} showsVerticalScrollIndicator={false} >
+      <KeyboardAwareScrollView style={styles.marginView} showsVerticalScrollIndicator={false}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.container}>
             <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
@@ -66,26 +89,10 @@ export default function MobileOTP() {
             <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.mobilephone} />
             <Text style={styles.phoneSubText}>Mobile Number</Text>
 
-
             <View style={styles.InputView}>
-              <TouchableOpacity onPress={() => setShowCountryPicker(true)} style={styles.countryPicker}>
-                <Text style={styles.countryCodeText}>+{callingCode}</Text>
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.selector}>
+                <Text style={styles.selectedText}>{selectedCountry.dial_code} ({selectedCountry.name})</Text>
               </TouchableOpacity>
-
-              <CountryPicker
-                withFilter
-                withFlag
-                withCallingCode
-                // withCountryNameButton
-                // withEmoji
-                visible={showCountryPicker}
-                onClose={() => setShowCountryPicker(false)}
-                onSelect={(country) => {
-                  setCountryCode(country.cca2);
-                  setCallingCode(country.callingCode[0]);
-                }}
-                countryCode={countryCode}
-              />
 
               <TextInput
                 style={styles.textInputView}
@@ -97,13 +104,10 @@ export default function MobileOTP() {
                 placeholderTextColor={AllColors.black}
               />
             </View>
+
             {userMobileNumberError ? (
               <Text style={styles.errorText}>{userMobileNumberError}</Text>
             ) : null}
-
-            {/* <TouchableOpacity onPress={() => navigation.navigate('CompleteProfile')} >
-              <Text>complete profile</Text>
-            </TouchableOpacity> */}
 
             <TouchableOpacity onPress={handleSubmit} style={[styles.touchView, { marginTop: 50 }]}>
               {loading ? (
@@ -112,10 +116,34 @@ export default function MobileOTP() {
                 <Text style={styles.buttonInsideText}>Sign in with Number</Text>
               )}
             </TouchableOpacity>
+
+            <Modal visible={modalVisible} animationType="slide">
+              <View style={styles.modalContainer}>
+                <TextInput
+                  placeholder="Search country..."
+                  value={search}
+                  onChangeText={setSearch}
+                  style={styles.searchInput}
+                />
+                <FlatList
+                  data={filteredData}
+                  keyExtractor={(item) => item.code}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.item} onPress={() => handleSelect(item)}>
+                      <Text>{item.name} ({item.dial_code})</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                  <Text style={styles.closeText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
+
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
-    </Container >
+    </Container>
   );
 }
 
@@ -123,7 +151,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: width/1.4,
+    paddingHorizontal: width * 0.1,
     paddingTop: height * 0.05,
   },
   logoImage: {
@@ -141,21 +169,20 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: AllColors.black,
     marginTop: height * 0.02,
-    lineHeight: 34,
     textAlign: 'center',
   },
   phoneSubText: {
     fontFamily: Fonts.AfacadSemibold,
     fontSize: 20,
     color: AllColors.black,
-    marginTop: height * 0.01,
-    marginBottom: height * 0.01,
+    marginVertical: height * 0.01,
   },
   InputView: {
     flexDirection: 'row',
-    marginTop: height * 0.015,
     alignItems: 'center',
     width: '100%',
+    marginTop: height * 0.015,
+    gap: 10,
   },
   textInputView: {
     flex: 1,
@@ -167,19 +194,15 @@ const styles = StyleSheet.create({
     color: AllColors.black,
     fontFamily: Fonts.AfacadBold,
   },
-  countryPicker: {
-    backgroundColor: AllColors.lightGray,
+  selector: {
     paddingVertical: 15,
-    paddingHorizontal: 12,
+    paddingHorizontal: 5,
+    borderWidth: 1,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
+    borderColor: '#ccc',
   },
-  countryCodeText: {
+  selectedText: {
     fontSize: 16,
-    fontFamily: Fonts.AfacadBold,
-    color: AllColors.black,
   },
   errorText: {
     color: AllColors.red,
@@ -196,10 +219,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 12,
     marginTop: height * 0.06,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   buttonInsideText: {
@@ -210,5 +229,33 @@ const styles = StyleSheet.create({
   marginView: {
     flex: 1,
     backgroundColor: AllColors.white,
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    marginTop: 40,
+  },
+  searchInput: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  item: {
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+  },
+  closeButton: {
+    padding: 15,
+    backgroundColor: '#FF6347',
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  closeText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });

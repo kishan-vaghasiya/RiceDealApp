@@ -28,6 +28,7 @@
     "react-native": "0.77.0",
     "react-native-animated-pagination-dots": "0.1.41",
     "react-native-base64": "^0.2.1",
+    "react-native-country-codes-picker": "^2.3.5",
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.25.0",
