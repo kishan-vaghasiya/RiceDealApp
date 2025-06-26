@@ -37,4 +37,17 @@ export const AllColors = {
 
   shade1: "#FFD000",
   shade2: "#D95904",
+    primary: '#4361EE',       // Vibrant blue (main brand color)
+  primaryDark: '#3A56D4',   // Darker shade for pressed states
+  primaryLight: '#E7EBFD',  // Light shade for secondary buttons
+  
+  // Secondary Colors
+  secondary: '#4CC9F0',     // Teal blue for accents
+  success: '#4ADE80',       // Green for success states
+  error: '#F75555',        // Red for errors/warnings
+  warning: '#FACC15',      // Yellow for warnings
+  info: '#246BFD',
+    gray: '#94A3B8',         // Secondary text
+  grayDark: '#64748B',  
+  grey:"#D3D3D3"
 };

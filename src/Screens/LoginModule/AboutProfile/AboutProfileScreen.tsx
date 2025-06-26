@@ -12,14 +12,14 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {FadeIn, FadeInDown} from 'react-native-reanimated';
 import {Images} from '../../../Assets/Images';
 import InputField from '../../../Components/CustomInput/InputField';
 import {CustomHeader} from '../../../Components/CustomHeader/CutsomHeader';
 import metrics from '../../../Constants/Metrics';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AllColors} from '../../../Constants/COLORS';
-import {styles} from './style';
+// import {styles} from './style';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Fonts} from '../../../Constants/Fonts';
@@ -28,6 +28,8 @@ import {Instance} from '../../../Api/Instance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GET_TRADES, REGISTER} from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface Errors {
   name?: string;
@@ -52,9 +54,8 @@ const AboutProfileScreen: React.FC = (props: any) => {
   const [tradeOpen, setTradeOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [tradeItems, setTradeItems] = useState<any[]>([]);
-
-  const [toastMessage, setToastMessage] = useState<string | null>(null); // State for toast message
-  const [toastType, setToastType] = useState<'success' | 'error'>('success'); // State for toast type
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
   const fetchTradeData = async () => {
     try {
@@ -65,7 +66,6 @@ const AboutProfileScreen: React.FC = (props: any) => {
           value: trade._id,
         }));
         setTradeItems(tradeData);
-        console.log('Fetched Trade Data:', tradeData);
       } else {
         Alert.alert('Error', 'Failed to fetch trade data');
       }
@@ -88,18 +88,21 @@ const AboutProfileScreen: React.FC = (props: any) => {
       setErrors(prev => ({...prev, name: undefined}));
     }
   };
+  
   const handleCityChange = (text: string) => {
     setCity(text);
     if (text.trim()) {
       setErrors(prev => ({...prev, city: undefined}));
     }
   };
+  
   const handleStateChange = (text: string) => {
     setState(text);
     if (text.trim()) {
       setErrors(prev => ({...prev, state: undefined}));
     }
   };
+  
   const handleTradeNameChange = (text: string) => {
     setTradeName(text);
     if (text.trim()) {
@@ -120,6 +123,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
       setErrors(prev => ({...prev, email: undefined}));
     }
   };
+  
   const handlePasswordChange = (text: string) => {
     setPassword(text);
     if (text.trim()) {
@@ -174,19 +178,18 @@ const AboutProfileScreen: React.FC = (props: any) => {
         });
 
         if (response.data.success) {
-          console.log('User registered successfully:', response.data);
           await AsyncStorage.setItem('userToken', response.data.token);
-          setToastMessage('Registration successful!'); // Success message
-          setToastType('success'); // Set success type for the toast
+          setToastMessage('Registration successful!');
+          setToastType('success');
           props.navigation.navigate('ChoosePlan');
         } else {
-          setToastMessage(response.data.msg || 'Registration failed'); // Error message
-          setToastType('error'); // Set error type for the toast
+          setToastMessage(response.data.msg || 'Registration failed');
+          setToastType('error');
         }
       } catch (error) {
         console.error('Error during registration:', error);
-        setToastMessage('Something went wrong while registering the user'); // Error message
-        setToastType('error'); // Set error type for the toast
+        setToastMessage('Something went wrong while registering the user');
+        setToastType('error');
       } finally {
         setLoading(false);
       }
@@ -207,6 +210,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
   const defaultProfilePic =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s';
   const imageSource = profilePic ? {uri: profilePic} : {uri: defaultProfilePic};
+  
   return (
     <Container
       statusBarStyle={'dark-content'}
@@ -214,11 +218,12 @@ const AboutProfileScreen: React.FC = (props: any) => {
       backgroundColor={AllColors.white}>
       <CustomHeader
         type="back"
-        screenName="About Profile"
+        screenName="Complete Your Profile"
         onPressBack={() => {
           props.navigation.goBack();
         }}
       />
+      
       <KeyboardAwareScrollView
         style={styles.marginView}
         enableOnAndroid={true}
@@ -226,131 +231,233 @@ const AboutProfileScreen: React.FC = (props: any) => {
         enableAutomaticScroll={true}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}>
-          <View>
-            <View style={styles.avatarContainer}>
-              <Animated.View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            {/* Profile Picture Section */}
+            <Animated.View 
+              entering={FadeIn.duration(500)}
+              style={styles.avatarContainer}
+            >
+              <View style={styles.profileImageWrapper}>
                 <Image
-                  style={{width: 90, height: 90, borderRadius: 45}}
+                  style={styles.profileImage}
                   source={imageSource}
                 />
-              </Animated.View>
-              <TouchableOpacity
-                style={styles.editPhotoButton}
-                onPress={handleImagePick}>
-                <Image
-                  style={{width: metrics.hp14, height: metrics.hp7}}
-                  resizeMode="contain"
-                  source={Images.editFrame}
-                />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={styles.editPhotoButton}
+                  onPress={handleImagePick}>
+                  <Icon name="edit" size={20} color={AllColors.white} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.profileText}>Add Profile Photo</Text>
+            </Animated.View>
 
-            <InputField
-              label="User Name"
-              placeholder="Enter your Name"
-              value={name}
-              onChangeText={handleNameChange}
-              error={errors.name}
-            />
-            <InputField
-              label="Email Address"
-              placeholder="Enter your Email Address"
-              value={email}
-              onChangeText={handleEmailChange}
-              keyboardType="email-address"
-              error={errors.email}
-            />
-            <InputField
-              label="Mobile Number"
-              placeholder="Enter your Mobile Number"
-              value={mobileNumber}
-              onChangeText={handleMobileChange}
-              keyboardType="phone-pad"
-              error={errors.mobileNumber}
-              maxLength={10}
-            />
-            <Text style={styles.Tradetitile}>Trade Name</Text>
-            <View style={{marginHorizontal: 15}}>
+            {/* Form Section */}
+            <Animated.View 
+              entering={FadeInDown.duration(800).delay(200)}
+              style={styles.formContainer}
+            >
+              <InputField
+                label="Full Name"
+                placeholder="Enter your full name"
+                value={name}
+                onChangeText={handleNameChange}
+                error={errors.name}
+                icon="person"
+              />
+              
+              <InputField
+                label="Email Address"
+                placeholder="Enter your email address"
+                value={email}
+                onChangeText={handleEmailChange}
+                keyboardType="email-address"
+                error={errors.email}
+                icon="email"
+              />
+              
+              <InputField
+                label="Mobile Number"
+                placeholder="Enter your mobile number"
+                value={mobileNumber}
+                onChangeText={handleMobileChange}
+                keyboardType="phone-pad"
+                error={errors.mobileNumber}
+                maxLength={10}
+                icon="phone"
+              />
+              
+              <Text style={styles.dropdownLabel}>Trade Name</Text>
               <DropDownPicker
                 open={tradeOpen}
                 value={tradeName}
                 items={tradeItems}
                 setOpen={setTradeOpen}
-                etValue={setTradeName}
+                setValue={setTradeName}
                 setItems={setTradeItems}
-                placeholder="Select your Trade Name"
-                containerStyle={{marginVertical: metrics.hp1}}
-                onChangeValue={selectedValue => {
-                  console.log('Selected Trade ID: ', selectedValue);
-                  const selectedTrade = tradeItems.find(
-                    item => item.value === selectedValue,
-                  );
-                  if (selectedTrade) {
-                    console.log('Selected Trade: ', selectedTrade);
-                  }
-                }}
-                style={{
-                  backgroundColor: AllColors.lightGray,
-                  borderColor: AllColors.lightGray,
-                  marginHorizontal: metrics.hp1,
-                  alignSelf: 'center',
-                }}
-                dropDownContainerStyle={{
-                  backgroundColor: AllColors.lightGray,
-                  borderWidth: 0,
-                }}
-                placeholderStyle={{
-                  color: 'grey',
-                  fontSize: 17,
-                  fontFamily: Fonts.AfacadRegular,
-                }}
+                placeholder="Select your trade"
+                placeholderStyle={styles.dropdownPlaceholder}
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                textStyle={styles.dropdownText}
+                ArrowDownIconComponent={() => <Icon name="arrow-drop-down" size={24} color="#666" />}
+                ArrowUpIconComponent={() => <Icon name="arrow-drop-up" size={24} color="#666" />}
+                TickIconComponent={() => <Icon name="check" size={18} color={AllColors.primary} />}
               />
-            </View>
-
-            <InputField
-              label="City"
-              placeholder="Enter your City"
-              value={city}
-              onChangeText={handleCityChange}
-              keyboardType="default"
-              error={errors.city}
-            />
-            <InputField
-              label="State"
-              placeholder="Enter your State"
-              value={state}
-              onChangeText={handleStateChange}
-              keyboardType="default"
-              error={errors.state}
-            />
-            <InputField
-              label="Password"
-              placeholder="Enter your Password"
-              value={password}
-              onChangeText={handlePasswordChange}
-              secureTextEntry={true}
-              error={errors.password}
-            />
-            <TouchableOpacity
-              onPress={handleSave}
-              style={styles.saveButton}
-              disabled={loading}>
-              {loading ? (
-                <ActivityIndicator size="small" color={AllColors.white} />
-              ) : (
-                <Text style={styles.saveButtonText}>Save</Text>
-              )}
-            </TouchableOpacity>
+              
+              <InputField
+                label="City"
+                placeholder="Enter your city"
+                value={city}
+                onChangeText={handleCityChange}
+                keyboardType="default"
+                error={errors.city}
+                icon="location-city"
+              />
+              
+              <InputField
+                label="State"
+                placeholder="Enter your state"
+                value={state}
+                onChangeText={handleStateChange}
+                keyboardType="default"
+                error={errors.state}
+                icon="map"
+              />
+              
+              <InputField
+                label="Password"
+                placeholder="Create a password"
+                value={password}
+                onChangeText={handlePasswordChange}
+                secureTextEntry={true}
+                error={errors.password}
+                icon="lock"
+              />
+              
+              <TouchableOpacity
+                onPress={handleSave}
+                disabled={loading}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={[AllColors.primary, AllColors.primaryDark]}
+                  style={styles.saveButton}
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color={AllColors.white} />
+                  ) : (
+                    <Text style={styles.saveButtonText}>Save & Continue</Text>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
+      
       <ToastMessage type={toastType} message={toastMessage} />
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  profileImageWrapper: {
+    position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: AllColors.primaryLight,
+  },
+  editPhotoButton: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    backgroundColor: AllColors.primary,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: AllColors.white,
+  },
+  profileText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "grey",
+    fontFamily: Fonts.AfacadRegular,
+  },
+  formContainer: {
+    marginTop: 10,
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 8,
+    fontFamily: Fonts.AfacadRegular,
+  },
+  dropdown: {
+    backgroundColor: AllColors.lightGray,
+    borderColor: AllColors.lightGray,
+    borderRadius: 10,
+    minHeight: 50,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+  },
+  dropdownContainer: {
+    backgroundColor: AllColors.white,
+    borderColor: AllColors.lightGray,
+    borderRadius: 10,
+    marginTop: 5,
+    borderWidth: 1,
+  },
+  dropdownPlaceholder: {
+    color: "grey",
+    fontSize: 16,
+    fontFamily: Fonts.AfacadRegular,
+  },
+  dropdownText: {
+    fontSize: 16,
+    fontFamily: Fonts.AfacadRegular,
+    color: AllColors.black,
+  },
+  saveButton: {
+    height: 50,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: AllColors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  saveButtonText: {
+    color: AllColors.white,
+    fontSize: 18,
+    // fontFamily: Fonts.AfacadSemiBold,
+  },
+});
 
 export default AboutProfileScreen;

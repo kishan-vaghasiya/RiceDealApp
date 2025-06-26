@@ -1,45 +1,59 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   Image,
-  ImageBackground,
   Keyboard,
   Platform,
-  SafeAreaView,
+  StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Animated,
+  Easing
 } from "react-native";
-import { Images } from "../../../Assets/Images";
-import { styles } from "./styles";
-import { AllColors } from "../../../Constants/COLORS";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Fonts, fontSize } from "../../../Constants/Fonts";
-import { AllRegexss } from "../../../Constants/AllRegexss";
-import Animated from "react-native-reanimated";
-import { Container } from "../../../Components/Container/Container";
-import ToastMessage from "../../../Components/ToastMessage/ToastMessage";
-import { requestUserPermission } from "../../utils/PushNotification";
 import messaging from '@react-native-firebase/messaging';
+import { Images } from "../../../Assets/Images";
+import ToastMessage from "../../../Components/ToastMessage/ToastMessage";
+
 interface LoginScreenProps {
-  // route: { params: { changeSignInStatus: (flag: boolean) => void } }
   navigation: NavigationProp<any, any>;
 }
 
+const { width, height } = Dimensions.get('window');
+
+// Color palette
+const Colors = {
+  primary: '#4361EE',
+  primaryLight: '#E7EBFD',
+  primary300: '#A5B4FC',
+  white: '#FFFFFF',
+  black: '#000000',
+  gray: '#64748B',
+  grayLight: '#E2E8F0',
+  grayDark: '#334155',
+  success: '#4ADE80',
+  error: '#F75555',
+};
+
 const LoginScreen = (props: LoginScreenProps) => {
-  const navigation = useNavigation<any>()
-  const [number, onChangeNumber] = useState("");
-  const [isSelected, setIsSelected] = useState(Boolean);
+  const navigation = useNavigation<any>();
   const [fcmToken, setFcmToken] = useState<any>('');
-  const [userMobileNumber, setuserMobileNumber] = useState<string>(
-    __DEV__ ? "" : ""
-  );
-  const [userMobileNumberHasError, setuserMobileNumberHasError] =
-    useState<boolean>(false);
-  const [userMobileNumberErrorString, setuserMobileNumberErrorString] =
-    useState<string>("");
+  const [animation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    // Start animation
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: true,
+    }).start();
+
+    getFCMToken();
+  }, []);
 
   const getFCMToken = async () => {
     let token = await messaging().getToken();
@@ -47,58 +61,160 @@ const LoginScreen = (props: LoginScreenProps) => {
     console.log(token, 'my token');
   };
 
-  function onChageMobileNumber(text: string) {
-    if (text) {
-      setuserMobileNumber(text);
-      AllRegexss.mobileFormate.test(text) ? (setuserMobileNumberHasError(false),
-        setuserMobileNumberErrorString(""), Keyboard.dismiss()) : (setuserMobileNumberHasError(true),
-          setuserMobileNumberErrorString("Please enter valid mobile number"));
-    } else {
-      setuserMobileNumber(text);
-      text.length < 11 && text.length != 0 ? (setuserMobileNumberHasError(true),
-        setuserMobileNumberErrorString("Please enter valid mobile number")) : (setuserMobileNumberHasError(false),
-          setuserMobileNumberErrorString(""));
-    }
-  }
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [50, 0],
+  });
 
-  function SendOTP(Type: string) {
-    navigation.navigate("LoginDetails", { Type: Type == 'Email' ? 'Email' : "OTP" });
-  }
-
-  useEffect(() => {
-    // requestUserPermission();
-    getFCMToken();
-  }, []);
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   return (
-    <Container statusBarStyle={'dark-content'} statusBarBackgroundColor={AllColors.white} backgroundColor={AllColors.white}>
-      <KeyboardAwareScrollView style={styles.marginView} enableOnAndroid={true} extraScrollHeight={Platform.OS == "ios" ? 0 : 40} enableAutomaticScroll={true} keyboardShouldPersistTaps="handled">
+    <View style={styles.container}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContainer}
+        enableOnAndroid={true}
+        extraScrollHeight={Platform.OS == "ios" ? 0 : 40}
+        keyboardShouldPersistTaps="handled"
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.content}>
+            <Animated.View style={[styles.logoContainer, { opacity, transform: [{ translateY }] }]}>
+              <Image 
+                style={styles.logo} 
+                resizeMode="contain" 
+                source={Images.Logo} 
+              />
+            </Animated.View>
 
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
-          <View style={{}}>
-            <Animated.Image style={styles.logoImage} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} />
-            {/* <Animated.Image style={{ width: '100%', borderWidth: 1, height: 200, resizeMode: 'contain' }} resizeMode="contain" sharedTransitionTag="Tag" source={Images.Logo} /> */}
-            <Text style={styles.phoneText}>{"Login With E-mail"}</Text>
-            <Animated.Image style={styles.mailImage} resizeMode="contain" source={Images.tick} />
-            {/* <Text style={styles.phoneSubText}>{"Select Your Login"}</Text> */}
-            <View style={styles.InputView}></View>
-            {/* <TouchableOpacity onPress={() => { SendOTP("Email") }} style={styles.touchView}> */}
+            <Animated.View style={[styles.headerContainer, { opacity }]}>
+              <Text style={styles.title}>Welcome Back!</Text>
+              <Text style={styles.subtitle}>Choose your login method</Text>
+            </Animated.View>
 
-            <TouchableOpacity onPress={() => navigation.navigate("EmailLogin")} style={styles.touchView}>
-              <Text style={[styles.buttonInsideText,]}>Login with E-mail</Text>
-            </TouchableOpacity>
+            <Animated.View style={[styles.buttonContainer, { opacity }]}>
+              <TouchableOpacity 
+                onPress={() => navigation.navigate("EmailLogin")} 
+                style={styles.primaryButton}
+              >
+                <Text style={styles.primaryButtonText}>Login with Email</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate("MobileOTP")} style={[styles.touchView, { backgroundColor: AllColors.primary300, },]}>
-              <Text style={[styles.buttonInsideText, { color: AllColors.black, },]}>Login with OTP</Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => navigation.navigate("MobileOTP")} 
+                style={styles.secondaryButton}
+              >
+                <Text style={styles.secondaryButtonText}>Login with OTP</Text>
+              </TouchableOpacity>
+            </Animated.View>
 
-            <Text style={styles.DontTxt}>Don't have an Account? <Text style={styles.siguptxt} onPress={(() => props.navigation.navigate('AboutProfileScreen'))}>Singup</Text></Text>
+            <Animated.View style={[styles.footer, { opacity }]}>
+              <Text style={styles.footerText}>
+                Don't have an Account?{' '}
+                <Text 
+                  style={styles.signupText} 
+                  onPress={() => props.navigation.navigate('AboutProfileScreen')}
+                >
+                  Sign up
+                </Text>
+              </Text>
+            </Animated.View>
           </View>
-
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
-    </Container>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: width * 0.08,
+    paddingBottom: 20,
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: height * 0.05,
+  },
+  logo: {
+    width: width * 0.5,
+    height: height * 0.2,
+  },
+  headerContainer: {
+    marginBottom: height * 0.06,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: '700',
+    color: Colors.grayDark,
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: width * 0.04,
+    color: Colors.gray,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    marginBottom: height * 0.02,
+  },
+  primaryButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: height * 0.02,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: height * 0.02,
+    shadowColor: Colors.primary,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  primaryButtonText: {
+    color: Colors.white,
+    fontSize: width * 0.045,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: Colors.primaryLight,
+    paddingVertical: height * 0.02,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.primary300,
+  },
+  secondaryButtonText: {
+    color: Colors.primary,
+    fontSize: width * 0.045,
+    fontWeight: '600',
+  },
+  footer: {
+    marginTop: height * 0.05,
+    alignItems: 'center',
+  },
+  footerText: {
+    color: Colors.gray,
+    fontSize: width * 0.038,
+  },
+  signupText: {
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+});
 
 export default LoginScreen;
