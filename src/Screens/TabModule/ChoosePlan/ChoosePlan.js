@@ -49,7 +49,7 @@ export default function ChoosePlan({ navigation }) {
         description: `${selectedPlan.name} Subscription`,
         image: 'https://your-app-logo.png', // Add your app logo
         currency: 'INR',
-        key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+        key: 'rzp_test_cEnvzyHa9o3Izi', // Replace with your Razorpay key
         amount: selectedPlan.amount * 100, // Amount in paise
         name: 'Your App Name',
         prefill: {
