@@ -107,7 +107,7 @@ const SplashScreen = (props: SplashScreenProps) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      {/* <StatusBar barStyle="light-content" /> */}
       <SafeAreaView style={styles.safeArea}>
         <Animated.View 
           style={[
