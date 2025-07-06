@@ -6,20 +6,17 @@ import {
   Image,
   StyleSheet,
   Alert,
-  SafeAreaView,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import Animated, {FadeIn, FadeInDown} from 'react-native-reanimated';
-import {Images} from '../../../Assets/Images';
 import InputField from '../../../Components/CustomInput/InputField';
 import {CustomHeader} from '../../../Components/CustomHeader/CutsomHeader';
-import metrics from '../../../Constants/Metrics';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AllColors} from '../../../Constants/COLORS';
-// import {styles} from './style';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Fonts} from '../../../Constants/Fonts';
@@ -30,6 +27,8 @@ import {GET_TRADES, REGISTER} from '../../../Api/Api_End_Points';
 import ToastMessage from '../../../Components/ToastMessage/ToastMessage';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
+const {width} = Dimensions.get('window');
 
 interface Errors {
   name?: string;
@@ -103,9 +102,9 @@ const AboutProfileScreen: React.FC = (props: any) => {
     }
   };
   
-  const handleTradeNameChange = (text: string) => {
-    setTradeName(text);
-    if (text.trim()) {
+  const handleTradeChange = (value: string) => {
+    setTradeName(value);
+    if (value) {
       setErrors(prev => ({...prev, trade: undefined}));
     }
   };
@@ -136,6 +135,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
     if (!name.trim()) newErrors.name = 'Name is required';
     if (!state.trim()) newErrors.state = 'State is required';
     if (!city.trim()) newErrors.city = 'City is required';
+    if (!tradeName) newErrors.trade = 'Trade is required';
     if (!mobileNumber.trim()) {
       newErrors.mobileNumber = 'Mobile number is required';
     } else if (!/^\d{10}$/.test(mobileNumber)) {
@@ -167,11 +167,13 @@ const AboutProfileScreen: React.FC = (props: any) => {
         formData.append('state', state);
         formData.append('trade', tradeName);
 
-        formData.append('image', {
-          uri: profilePic ? profilePic : defaultProfilePic,
-          type: 'image/jpeg',
-          name: 'profilePic.jpg',
-        });
+        if (profilePic) {
+          formData.append('image', {
+            uri: profilePic,
+            type: 'image/jpeg',
+            name: 'profilePic.jpg',
+          });
+        }
 
         const response = await Instance.post(REGISTER.url, formData, {
           headers: {'Content-Type': 'multipart/form-data'},
@@ -186,9 +188,12 @@ const AboutProfileScreen: React.FC = (props: any) => {
           setToastMessage(response.data.msg || 'Registration failed');
           setToastType('error');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error during registration:', error);
-        setToastMessage('Something went wrong while registering the user');
+        setToastMessage(
+          error.response?.data?.msg || 
+          'Something went wrong while registering the user'
+        );
         setToastType('error');
       } finally {
         setLoading(false);
@@ -197,18 +202,24 @@ const AboutProfileScreen: React.FC = (props: any) => {
   };
 
   const handleImagePick = () => {
-    launchImageLibrary({mediaType: 'photo', includeBase64: false}, response => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage = response.assets[0].uri;
-        setProfilePic(selectedImage);
-      } else {
-        Alert.alert('Image selection failed!');
+    launchImageLibrary(
+      {
+        mediaType: 'photo', 
+        quality: 0.8,
+        maxWidth: 500,
+        maxHeight: 500,
+      }, 
+      response => {
+        if (!response.didCancel && !response.errorCode && response.assets?.[0]?.uri) {
+          setProfilePic(response.assets[0].uri);
+        } else if (response.errorCode) {
+          Alert.alert('Error', 'Failed to select image');
+        }
       }
-    });
+    );
   };
 
-  const defaultProfilePic =
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s';
+  const defaultProfilePic = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
   const imageSource = profilePic ? {uri: profilePic} : {uri: defaultProfilePic};
   
   return (
@@ -219,15 +230,13 @@ const AboutProfileScreen: React.FC = (props: any) => {
       <CustomHeader
         type="back"
         screenName="Complete Your Profile"
-        onPressBack={() => {
-          props.navigation.goBack();
-        }}
+        onPressBack={() => props.navigation.goBack()}
       />
       
       <KeyboardAwareScrollView
-        style={styles.marginView}
+        contentContainerStyle={styles.scrollContainer}
         enableOnAndroid={true}
-        extraScrollHeight={Platform.OS == 'ios' ? 0 : 40}
+        extraScrollHeight={Platform.OS === 'ios' ? 0 : 40}
         enableAutomaticScroll={true}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
@@ -242,6 +251,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
                 <Image
                   style={styles.profileImage}
                   source={imageSource}
+                  resizeMode="cover"
                 />
                 <TouchableOpacity
                   style={styles.editPhotoButton}
@@ -276,6 +286,16 @@ const AboutProfileScreen: React.FC = (props: any) => {
                 icon="email"
               />
               
+                   <InputField
+                label="Select Your Trade"
+                placeholder="Select Your Trade"
+                value={mobileNumber}
+                onChangeText={handleMobileChange}
+                keyboardType="phone-pad"
+                error={errors.mobileNumber}
+                maxLength={10}
+                icon="phone"
+              />
               <InputField
                 label="Mobile Number"
                 placeholder="Enter your mobile number"
@@ -287,22 +307,49 @@ const AboutProfileScreen: React.FC = (props: any) => {
                 icon="phone"
               />
               
-              <Text style={styles.dropdownLabel}>Trade Name</Text>
+              <Text style={styles.dropdownLabel}>Select Your Business Category</Text>
               <DropDownPicker
                 open={tradeOpen}
                 value={tradeName}
                 items={tradeItems}
                 setOpen={setTradeOpen}
                 setValue={setTradeName}
+                onChangeValue={handleTradeChange}
                 setItems={setTradeItems}
                 placeholder="Select your trade"
                 placeholderStyle={styles.dropdownPlaceholder}
-                style={styles.dropdown}
+                style={[
+                  styles.dropdown,
+                  errors.trade ? {borderColor: AllColors.error} : {}
+                ]}
                 dropDownContainerStyle={styles.dropdownContainer}
                 textStyle={styles.dropdownText}
-                ArrowDownIconComponent={() => <Icon name="arrow-drop-down" size={24} color="#666" />}
-                ArrowUpIconComponent={() => <Icon name="arrow-drop-up" size={24} color="#666" />}
-                TickIconComponent={() => <Icon name="check" size={18} color={AllColors.primary} />}
+                ArrowDownIconComponent={() => (
+                  <Icon name="arrow-drop-down" size={24} color="#666" />
+                )}
+                ArrowUpIconComponent={() => (
+                  <Icon name="arrow-drop-up" size={24} color="#666" />
+                )}
+                TickIconComponent={() => (
+                  <Icon name="check" size={18} color={AllColors.primary} />
+                )}
+                listMode="SCROLLVIEW"
+                scrollViewProps={{
+                  nestedScrollEnabled: true,
+                }}
+              />
+              {errors.trade && (
+                <Text style={styles.errorText}>{errors.trade}</Text>
+              )}
+              
+                <InputField
+                label="Country"
+                placeholder="Enter your country"
+                value={city}
+                onChangeText={handleCityChange}
+                keyboardType="default"
+                error={errors.city}
+                icon="location-city"
               />
               
               <InputField
@@ -339,6 +386,7 @@ const AboutProfileScreen: React.FC = (props: any) => {
                 onPress={handleSave}
                 disabled={loading}
                 activeOpacity={0.8}
+                style={styles.buttonContainer}
               >
                 <LinearGradient
                   colors={[AllColors.primary, AllColors.primaryDark]}
@@ -358,16 +406,23 @@ const AboutProfileScreen: React.FC = (props: any) => {
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
       
-      <ToastMessage type={toastType} message={toastMessage} />
+      <ToastMessage 
+        type={toastType} 
+        message={toastMessage}
+        onDismiss={() => setToastMessage(null)}
+      />
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 30,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingBottom: 30,
   },
   avatarContainer: {
     alignItems: 'center',
@@ -404,25 +459,31 @@ const styles = StyleSheet.create({
   profileText: {
     marginTop: 10,
     fontSize: 16,
-    color: "grey",
+    color: AllColors.grey,
     fontFamily: Fonts.AfacadRegular,
   },
   formContainer: {
     marginTop: 10,
   },
   dropdownLabel: {
-    fontSize: 16,
-    color: "grey",
+    fontSize: 14,
+    color: AllColors.black,
     marginBottom: 8,
-    fontFamily: Fonts.AfacadRegular,
+    fontFamily: "800",
+    fontWeight: '800',
+  marginLeft:14
+
   },
   dropdown: {
     backgroundColor: AllColors.lightGray,
     borderColor: AllColors.lightGray,
     borderRadius: 10,
     minHeight: 50,
-    marginBottom: 15,
+    marginBottom: 5,
     paddingHorizontal: 15,
+    borderWidth: 1,
+    width:"94%",
+  marginLeft:10
   },
   dropdownContainer: {
     backgroundColor: AllColors.white,
@@ -432,7 +493,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   dropdownPlaceholder: {
-    color: "grey",
+    color: AllColors.grey,
     fontSize: 16,
     fontFamily: Fonts.AfacadRegular,
   },
@@ -441,12 +502,14 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.AfacadRegular,
     color: AllColors.black,
   },
+  buttonContainer: {
+    marginTop: 25,
+  },
   saveButton: {
     height: 50,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
     shadowColor: AllColors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -456,7 +519,14 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: AllColors.white,
     fontSize: 18,
-    // fontFamily: Fonts.AfacadSemiBold,
+    fontFamily: "800",
+  },
+  errorText: {
+    color: AllColors.error,
+    fontSize: 12,
+    marginBottom: 10,
+    marginLeft: 5,
+    fontFamily: Fonts.AfacadRegular,
   },
 });
 
