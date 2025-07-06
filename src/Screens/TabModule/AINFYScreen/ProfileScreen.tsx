@@ -19,17 +19,12 @@ interface AINFYScreenProps {
 const ProfileScreen = (props: AINFYScreenProps) => {
   const navigation = useNavigation();
   const { options } = useAuthContext()
-
   // console.log("options: ", options);
-
-
   const [CurrentBtn, setCurrentBtn] = useState<string>('Positions');
   const [userProfile, setUserProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<any[]>([]); // New state for products
   const [userId, setUserId] = useState<string>(''); // State to store the user ID
-
-
 
   const handleLogout = () => {
     Alert.alert(

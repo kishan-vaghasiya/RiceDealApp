@@ -1,5 +1,5 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -11,12 +11,12 @@ import {
   TouchableWithoutFeedback,
   View,
   Animated,
-  Easing
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+  Easing,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import messaging from '@react-native-firebase/messaging';
-import { Images } from "../../../Assets/Images";
-import ToastMessage from "../../../Components/ToastMessage/ToastMessage";
+import LinearGradient from 'react-native-linear-gradient';
+import { Images } from '../../../Assets/Images';
 
 interface LoginScreenProps {
   navigation: NavigationProp<any, any>;
@@ -24,7 +24,6 @@ interface LoginScreenProps {
 
 const { width, height } = Dimensions.get('window');
 
-// Color palette
 const Colors = {
   primary: '#4361EE',
   primaryLight: '#E7EBFD',
@@ -44,7 +43,6 @@ const LoginScreen = (props: LoginScreenProps) => {
   const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    // Start animation
     Animated.timing(animation, {
       toValue: 1,
       duration: 1000,
@@ -72,20 +70,25 @@ const LoginScreen = (props: LoginScreenProps) => {
   });
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#E7EBFD', '#FFFFFF']} style={styles.container}>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContainer}
         enableOnAndroid={true}
-        extraScrollHeight={Platform.OS == "ios" ? 0 : 40}
+        extraScrollHeight={Platform.OS === 'ios' ? 0 : 40}
         keyboardShouldPersistTaps="handled"
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.content}>
-            <Animated.View style={[styles.logoContainer, { opacity, transform: [{ translateY }] }]}>
-              <Image 
-                style={styles.logo} 
-                resizeMode="contain" 
-                source={Images.Logo} 
+            <Animated.View
+              style={[
+                styles.logoContainer,
+                { opacity, transform: [{ translateY }] },
+              ]}
+            >
+              <Image
+                style={styles.logo}
+                resizeMode="contain"
+                source={Images.Logo}
               />
             </Animated.View>
 
@@ -95,15 +98,15 @@ const LoginScreen = (props: LoginScreenProps) => {
             </Animated.View>
 
             <Animated.View style={[styles.buttonContainer, { opacity }]}>
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("EmailLogin")} 
+              <TouchableOpacity
+                onPress={() => navigation.navigate('EmailLogin')}
                 style={styles.primaryButton}
               >
                 <Text style={styles.primaryButtonText}>Login with Email</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("MobileOTP")} 
+              <TouchableOpacity
+                onPress={() => navigation.navigate('MobileOTP')}
                 style={styles.secondaryButton}
               >
                 <Text style={styles.secondaryButtonText}>Login with OTP</Text>
@@ -113,9 +116,11 @@ const LoginScreen = (props: LoginScreenProps) => {
             <Animated.View style={[styles.footer, { opacity }]}>
               <Text style={styles.footerText}>
                 Don't have an Account?{' '}
-                <Text 
-                  style={styles.signupText} 
-                  onPress={() => props.navigation.navigate('AboutProfileScreen')}
+                <Text
+                  style={styles.signupText}
+                  onPress={() =>
+                    props.navigation.navigate('AboutProfileScreen')
+                  }
                 >
                   Sign up
                 </Text>
@@ -124,34 +129,35 @@ const LoginScreen = (props: LoginScreenProps) => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
   },
   scrollContainer: {
     flexGrow: 1,
   },
   content: {
     flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: width * 0.08,
     paddingBottom: 20,
-    justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: height * 0.05,
+    width: '100%',
+    height: height * 0.25,
+    marginBottom: height * 0.04,
   },
   logo: {
-    width: width * 0.5,
-    height: height * 0.2,
+    width: width * 0.6,
+    height: '100%',
   },
   headerContainer: {
-    marginBottom: height * 0.06,
+    marginBottom: height * 0.05,
     alignItems: 'center',
   },
   title: {
@@ -166,7 +172,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.03,
   },
   primaryButton: {
     backgroundColor: Colors.primary,

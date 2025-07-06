@@ -72,8 +72,6 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
     }
   }, [userId]);
 
-
-
   useEffect(() => {
     if (authUser) {
       socketServices.on('receiveMessage', (message: Message) => {
@@ -89,7 +87,6 @@ const ChatScreen: React.FC<ChatScreenProps> = (props) => {
       };
     }
   }, [userId]);
-
 
   const handleSendMessage = async () => {
     if (inputText.trim()) {

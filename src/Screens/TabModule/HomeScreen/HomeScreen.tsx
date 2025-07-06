@@ -1,6 +1,6 @@
 import { NavigationProp } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { Animated, FlatList, Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, TextInput, Modal, StyleSheet } from 'react-native';
+import { Animated, FlatList, Image, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, TextInput, Modal, StyleSheet, Linking } from 'react-native';
 import { styles } from './styles';
 import { CustomHeader } from '../../../Components/CustomHeader/CutsomHeader';
 import metrics from '../../../Constants/Metrics';
@@ -12,6 +12,7 @@ import { GET_TRADES } from '../../../Api/Api_End_Points';
 import socketServices from '../../utils/socketServices';
 import { useAuthContext } from '../../../context/AuthContext';
 import DealCarousel from '../../Components/DealCarousel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, any>;
@@ -19,29 +20,24 @@ interface HomeScreenProps {
 
 const HomeScreen = (props: HomeScreenProps) => {
   const { options, authUser } = useAuthContext()
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [categoriess, setCategoriess] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSubscriptionPopup, setShowSubscriptionPopup] = useState(false);
-
   const [latestProduct, setLatestProduct] = useState<any[]>([]);
   const [adminProduct, setAdminProduct] = useState<any[]>([]);
   const [banners, setBanners] = useState<any>([])
-
   const [search, setSearch] = useState('');
   const [filteredCategories, setFilteredCategories] = useState<any>([]);
 
   useEffect(() => {
     // Show subscription popup when component mounts
     setShowSubscriptionPopup(true);
-    
     getSingleLatestProduct();
     getAdminProduct();
     getBanner();
     fetchCategories();
-    
     socketServices.initialzeSocket(authUser?._id);
-
     return () => {
       socketServices.disconnectSocket();
     };
@@ -89,6 +85,21 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const handleChatNavigation = (senderId: any, item: any) => {
     navigation.navigate('ChatScreen', { userId: senderId, user: item });
+  };
+
+  const handleWhatsAppClick = () => {
+    // Replace this phone number with your WhatsApp business number
+    const phoneNumber = '+918277903077'; // Include country code
+    const url = `whatsapp://send?phone=${phoneNumber}`;
+    
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        // If WhatsApp is not installed, open in browser
+        Linking.openURL(`https://wa.me/${phoneNumber}`);
+      }
+    });
   };
 
   const renderProduct = ({ item }: any) => (
@@ -158,6 +169,14 @@ const HomeScreen = (props: HomeScreenProps) => {
           />
         )}
       </ScrollView>
+
+      {/* WhatsApp Icon */}
+      <TouchableOpacity 
+        style={popupStyles.whatsappButton}
+        onPress={handleWhatsAppClick}
+      >
+        <Icon name="whatsapp" size={30} color="white" />
+      </TouchableOpacity>
 
       {/* Subscription Popup Modal */}
       <Modal
@@ -239,6 +258,22 @@ const popupStyles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  whatsappButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#25D366',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
 });
 

@@ -211,7 +211,6 @@ export default function ChoosePlan({ navigation }) {
             Choose the best plan according to your needs! You can always upgrade later.
           </Text>
         </View>
-
         <TouchableOpacity 
           style={[
             styles.continueButton,
