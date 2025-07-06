@@ -11,8 +11,8 @@ export const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   SplashScreen: {
-    height: "100%",
-    width: "100%",
+    height: 400,
+    width: 400,
     alignSelf: 'center'
   },
 });
