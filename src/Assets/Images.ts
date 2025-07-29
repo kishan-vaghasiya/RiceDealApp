@@ -2,7 +2,7 @@ export const Images = {
   CommonBG: require("../Assets/Image/BG.png"),
   splash_screens: require("../Assets/Image/GetStart/splash_screens.png"),
 
-  Logo: require("../Assets/Image/Login/Logo.jpg"),
+  Logo: require("../Assets/Image/Profile/profiles.jpeg"),
   check: require("../Assets/Image/Login/check.png"),
   uncheck: require("../Assets/Image/Login/uncheck.png"),
   tick: require("../Assets/Image/Login/tick.png"),

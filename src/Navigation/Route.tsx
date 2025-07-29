@@ -33,6 +33,7 @@ import ProfileComplete from "../Screens/LoginModule/LoginDetails/ProfileComplete
 import ChatScreenWithCategory from "../Screens/TabModule/ChatScreen/ChatScreenWithCategory";
 import ConcatctListWithCategory from "../Screens/TabModule/InvestScreen/ConcatctListWithCategory";
 import { createNotificationChannel, requestUserPermission } from "../Screens/utils/PushNotification";
+import TermConditions from "../Screens/Policy/TermConditions";
 
 const options2 = {
   headerShown: false,
@@ -62,7 +63,7 @@ export default function Route() {
       <TabObj.Navigator initialRouteName="Home" tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}>
         <TabObj.Screen name="Chat" component={ContactLists} options={{ headerShown: false }} />
         <TabObj.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <TabObj.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+        <TabObj.Screen name="Add Product" component={AddItem} options={{ headerShown: false }} />
       </TabObj.Navigator>
     );
   };
@@ -99,7 +100,10 @@ export default function Route() {
           <StackObj.Screen name='MobileOTP' component={MobileOTP} options={{ headerShown: false }} />
           <StackObj.Screen name='RiseListChat' component={RiseListChat} options={{ headerShown: false }} />
           <StackObj.Screen name='Subscribed' component={Subscribed} options={{ headerShown: false }} />
+          <StackObj.Screen name='TermConditions' component={TermConditions} options={{ headerShown: false }} />
           <StackObj.Screen name='ForgotPassword' component={ForgotPassword} options={{ headerShown: false }} />
+          <StackObj.Screen name='ProfileScreen' component={ProfileScreen} options={{ headerShown: false }} />
+
         </StackObj.Navigator>
       </NavigationContainer>
     </View>
