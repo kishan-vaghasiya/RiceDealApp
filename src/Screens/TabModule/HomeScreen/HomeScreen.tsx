@@ -362,7 +362,7 @@ const HomeScreen = (props: HomeScreenProps) => {
                     source={{uri: banner.image}}
                     style={{
                       width: width,
-                      height: 200,
+                      height: 150,
                       borderRadius: 8,
                     }}
                     resizeMode="cover"
@@ -558,7 +558,7 @@ const enhancedStyles = StyleSheet.create({
 
   // Section Styles
   sectionContainer: {
-    marginBottom: 25,
+  
     paddingHorizontal: 15,
   },
   sectionHeader: {
